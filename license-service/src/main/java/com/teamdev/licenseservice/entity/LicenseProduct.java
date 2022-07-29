@@ -15,8 +15,13 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "license_product")
-@AttributeOverride(name = "id", column = @Column(name = "license_product_id"))
 public class LicenseProduct extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "license_product_id", columnDefinition ="INT(11) UNSIGNED")
+    @Comment("라이선스_제품ID")
+    private Integer id;
 
     @Column(name = "num_of_auth_available", columnDefinition ="INT(10) UNSIGNED", nullable = false)
     @ColumnDefault("1")

@@ -14,13 +14,13 @@ import javax.validation.constraints.Size;
 @Getter
 @Entity
 @Table
-@AttributeOverride(name = "id", column = @Column(name = "account_id"))
-public class Account extends BaseEntity {
+public class Account {
 
-    @Column(name = "account_name", updatable = false, nullable = false)
+    @Id
+    @Column(name = "account_id", columnDefinition ="INT(11) UNSIGNED", updatable = false)
     @Size(max = 20)
-    @Comment("계정이름")
-    private String name;
+    @Comment("계정ID")
+    private String id;
 
     @Column(name = "password", nullable = false)
     @Size(max = 20)
@@ -34,8 +34,8 @@ public class Account extends BaseEntity {
     private Role role;
 
     @Builder
-    public Account(String name, String password, Role role) {
-        this.name = name;
+    public Account(String id, String password, Role role) {
+        this.id = id;
         this.password = password;
         this.role = role;
     }

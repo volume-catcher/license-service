@@ -15,8 +15,13 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table
-@AttributeOverride(name = "id", column = @Column(name = "auth_id"))
 public class Auth extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "auth_id", columnDefinition ="INT(11) UNSIGNED")
+    @Comment("인증ID")
+    private Integer id;
 
     @Column(name = "device", columnDefinition ="BINARY(16)", updatable = false, nullable = false)
     @Comment("기기일련번호")

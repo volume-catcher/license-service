@@ -13,8 +13,13 @@ import javax.validation.constraints.Size;
 @Getter
 @Entity
 @Table
-@AttributeOverride(name = "id", column = @Column(name = "role_id"))
-public class Role extends BaseEntity {
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id", columnDefinition ="INT(11) UNSIGNED")
+    @Comment("역할ID")
+    private Integer id;
 
     @Column(name = "role_name", nullable = false)
     @Size(max = 15)

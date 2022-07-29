@@ -13,10 +13,10 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table
-@AttributeOverride(name = "id", column = @Column(name = "license_id"))
 public class License extends BaseTimeEntity {
 
-    @Column(name = "license_key", columnDefinition ="CHAR(19)", unique = true, updatable = false, nullable = false)
+    @Id
+    @Column(name = "license_key", columnDefinition ="CHAR(19)", updatable = false)
     @Comment("라이선스키")
     private String key;
 
