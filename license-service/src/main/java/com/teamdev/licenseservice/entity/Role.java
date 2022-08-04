@@ -21,7 +21,7 @@ public class Role {
     @Comment("역할ID")
     private Integer id;
 
-    @Column(name = "role_name", nullable = false)
+    @Column(name = "role_name", unique = true, nullable = false)
     @Size(max = 15)
     @Comment("역할이름")
     private String name;
