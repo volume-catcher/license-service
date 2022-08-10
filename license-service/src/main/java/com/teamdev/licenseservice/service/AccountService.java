@@ -32,7 +32,6 @@ public class AccountService {
     @Transactional
     public AccountDto signUp(AccountDto accountDto) {
         if (accountRepository.findById(accountDto.getId()).isPresent()) {
-            // TODO: 2022.08.04 Exception internal 에러 안 뜨게 처리
             throw new DuplicateAccountException(accountDto.getId());
         }
 

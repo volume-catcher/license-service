@@ -8,4 +8,8 @@ public class DuplicateAccountException extends RuntimeException {
     public DuplicateAccountException(String id) {
         this.id = id;
     }
+
+    public String getId() {
+        return id;
+    }
 }

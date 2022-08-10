@@ -20,7 +20,7 @@ public class AccountController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AccountDto> signup(@Valid @RequestBody AccountDto accountDto) {
+    public ResponseEntity<AccountDto> signUp(@Valid @RequestBody AccountDto accountDto) {
         return ResponseEntity.ok(accountService.signUp(accountDto));
     }
 

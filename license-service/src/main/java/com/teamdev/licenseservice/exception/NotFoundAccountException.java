@@ -8,4 +8,8 @@ public class NotFoundAccountException extends RuntimeException {
     public NotFoundAccountException(String id) {
         this.id = id;
     }
+
+    public String getId() {
+        return id;
+    }
 }

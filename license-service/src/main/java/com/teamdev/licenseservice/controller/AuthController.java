@@ -1,7 +1,6 @@
 package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.SignInDto;
-import com.teamdev.licenseservice.dto.TokenDto;
 import com.teamdev.licenseservice.jwt.JwtFilter;
 import com.teamdev.licenseservice.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +31,17 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<TokenDto> authorize(@Valid @RequestBody SignInDto signInDto) {
+    public ResponseEntity signIn(@Valid @RequestBody SignInDto signInDto) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInDto.getId(), signInDto.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-        //TODO: 2022.08.03. JwtFilter에서 setAuthentication을 해주는데 여기서 저장할 필요가 있을지 고민해보기.
 
         String jwt = tokenProvider.createToken(authentication);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
     }
+
 }

@@ -1,6 +1,9 @@
 package com.teamdev.licenseservice.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
@@ -24,8 +27,7 @@ public class Account {
     @Comment("비밀번호")
     private String password;
 
-    //TODO: 2022.08.03.영속성관리 CASCADE 어떻게 할지 고민하고...
-    //  AccountService.signUp에서 ROLE 값 중복 저장 처리 해결하기.
+    //TODO: 2022.08.03.영속성관리 CASCADE 어떻게 할지 고민하기
     @ManyToMany
     @JoinTable(
             name="account_role",
