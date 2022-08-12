@@ -18,6 +18,7 @@ import java.io.IOException;
 public class JwtFilter extends GenericFilterBean {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+
     private TokenProvider tokenProvider;
 
     @Autowired

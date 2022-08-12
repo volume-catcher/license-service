@@ -20,7 +20,7 @@ public class RoleService {
     }
 
     @Transactional
-    public Role saveRole(RoleDto roleDto) {
+    public Role getOrSaveRole(RoleDto roleDto) {
         Optional<Role> preRole = roleRepository.findByName(roleDto.getName());
         if (preRole.isPresent()) {
             return preRole.get();

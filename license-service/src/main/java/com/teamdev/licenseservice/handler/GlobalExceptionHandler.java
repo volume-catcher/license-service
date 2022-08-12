@@ -1,9 +1,6 @@
 package com.teamdev.licenseservice.handler;
 
-import com.teamdev.licenseservice.exception.DuplicateAccountException;
-import com.teamdev.licenseservice.exception.ErrorCode;
-import com.teamdev.licenseservice.exception.ErrorResponse;
-import com.teamdev.licenseservice.exception.NotFoundAccountException;
+import com.teamdev.licenseservice.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +15,23 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(NotFoundAccountException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundAccountException(HttpServletRequest req,  NotFoundAccountException e) {
-        logger.debug("계정을 찾을 수 없습니다, id: {}", e.getId());
+    public ResponseEntity<ErrorResponse> handleNotFoundException(HttpServletRequest req, NotFoundAccountException e) {
         final ErrorCode errorCode = ErrorCode.ACCOUNT_NOT_FOUND;
+        logger.debug("{} id: {}", errorCode.getMessage(), e.getId());
         return getErrorResponseEntity(req, errorCode);
     }
 
     @ExceptionHandler(DuplicateAccountException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateAccountException(HttpServletRequest req, DuplicateAccountException e) {
-        logger.debug("이미 존재하는 계정입니다, id: {}", e.getId());
+    public ResponseEntity<ErrorResponse> handleDuplicateException(HttpServletRequest req, DuplicateAccountException e) {
         final ErrorCode errorCode = ErrorCode.ACCOUNT_DUPLICATED;
+        logger.debug("{}, id: {}", e.getMessage(), e.getId());
+        return getErrorResponseEntity(req, errorCode);
+    }
+
+    @ExceptionHandler(DuplicateProductException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateProductException(HttpServletRequest req, DuplicateProductException e) {
+        final ErrorCode errorCode = ErrorCode.PRODUCT_DUPLICATED;
+        logger.debug("{}, id: {}", e.getMessage(), e.getId());
         return getErrorResponseEntity(req, errorCode);
     }
 

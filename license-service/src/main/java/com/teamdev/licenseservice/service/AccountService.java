@@ -36,7 +36,7 @@ public class AccountService {
             throw new DuplicateAccountException(accountDto.getId());
         }
 
-        Role role = roleService.saveRole(RoleDto.builder()
+        Role role = roleService.getOrSaveRole(RoleDto.builder()
                 .name("ROLE_USER")
                 .build());
 

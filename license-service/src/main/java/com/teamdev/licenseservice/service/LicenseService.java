@@ -20,9 +20,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class LicenseService {
 
+    private final Logger logger = LoggerFactory.getLogger(LicenseService.class);
+    
     private final LicenseRepository licenseRepository;
     private final AccountRepository accountRepository;
-    private final Logger logger = LoggerFactory.getLogger(LicenseService.class);
 
     @Autowired
     public LicenseService(LicenseRepository licenseRepository, AccountRepository accountRepository) {
@@ -43,24 +44,22 @@ public class LicenseService {
                 .key(licenseKey)
                 .id(id)
                 .build();
-        saveLicense(licenseDto);
-
-        logger.debug("라이선스를 발급하였습니다, id: {}, key: {}", id, licenseKey);
+        
+        saveLicenseWithValidAccount(licenseDto);
+        
+        logger.debug("라이선스를 발급하였습니다, id: {}, 라이선스키: {}", id, licenseKey);
 
         return licenseDto;
     }
 
     @Transactional
-    public License saveLicense(LicenseDto licenseDto) {
-        Optional<License> preLicense = licenseRepository.findByKey(licenseDto.getKey());
-        if (preLicense.isPresent()) {
-            return preLicense.get();
-        }
-
+    public License saveLicenseWithValidAccount(LicenseDto licenseDto) {
         Optional<Account> account = accountRepository.findById(licenseDto.getId());
+
         if (account.isEmpty()) {
             throw new NotFoundAccountException(licenseDto.getId());
         }
+
         License license = License.builder()
                 .key(licenseDto.getKey())
                 .account(account.get())
