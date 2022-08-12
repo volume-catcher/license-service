@@ -3,6 +3,7 @@ package com.teamdev.licenseservice.controller;
 import com.teamdev.licenseservice.dto.AccountDto;
 import com.teamdev.licenseservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class AccountController {
 
     @PostMapping("/signup")
     public ResponseEntity<AccountDto> signUp(@Valid @RequestBody AccountDto accountDto) {
-        return ResponseEntity.ok(accountService.signUp(accountDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.signUp(accountDto));
     }
 
     @GetMapping("/user")

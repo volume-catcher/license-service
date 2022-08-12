@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateAccountException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateAccountException(HttpServletRequest req, DuplicateAccountException e) {
         logger.debug("이미 존재하는 계정입니다, id: {}", e.getId());
-        final ErrorCode errorCode = ErrorCode.ACCOUNT_DUPLICATE;
+        final ErrorCode errorCode = ErrorCode.ACCOUNT_DUPLICATED;
         return getErrorResponseEntity(req, errorCode);
     }
 

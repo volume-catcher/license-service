@@ -13,7 +13,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,19 +30,23 @@ public class TokenProvider implements InitializingBean {
 
     private static final String ROLE_KEY = "role";
 
+    public final String authorizationHeader;
+    public final String authorizationBearer;
     private final String secret;
     private final long tokenValidityInMilliseconds;
 
     private Key key;
 
-    public TokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.token-validity-in-seconds}") long tokenValidityInMilliseconds) {
+    public TokenProvider(@Value("${jwt.header}") String authorizationHeader, @Value("${jwt.bearer}") String authorizationBearer, @Value("${jwt.secret}") String secret, @Value("${jwt.token-validity-in-seconds}") long tokenValidityInMilliseconds) {
+        this.authorizationHeader = authorizationHeader;
+        this.authorizationBearer = authorizationBearer;
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds * 1000;
     }
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -58,6 +65,18 @@ public class TokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    public String getToken(ServletRequest request) {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String bearerToken = httpServletRequest.getHeader(authorizationHeader);
+
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(authorizationBearer)) {
+            return bearerToken.substring(7);
+        }
+
+        logger.debug("토큰을 찾을 수 없습니다.");
+        return null;
     }
 
     public Authentication getAuthentication(String token) {
@@ -79,6 +98,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     public boolean validateToken(String token) {
+        //TODO: 에러 메세지 내용 추가하기
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;

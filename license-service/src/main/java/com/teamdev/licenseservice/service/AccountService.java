@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 
 @Service
+@Transactional(readOnly = true)
 public class AccountService {
 
     private final AccountRepository accountRepository;
@@ -48,13 +49,11 @@ public class AccountService {
         return AccountDto.from(accountRepository.save(account));
     }
 
-    @Transactional(readOnly = true)
     public AccountDto getAccountWithRoles(String id) {
         return AccountDto.from(accountRepository.findOneWithRolesById(id)
                 .orElseThrow(() -> new NotFoundAccountException(id)));
     }
 
-    @Transactional(readOnly = true)
     public AccountDto getMyAccountWithRoles() {
         return AccountDto.from(SecurityUtil.getCurrentId().flatMap(accountRepository::findOneWithRolesById).orElseThrow(() -> new NotFoundAccountException(null)));
     }
