@@ -8,8 +8,6 @@ import com.teamdev.licenseservice.entity.QProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public class LicenseProductRepositoryImpl implements LicenseProductCustom {
 
@@ -21,7 +19,7 @@ public class LicenseProductRepositoryImpl implements LicenseProductCustom {
     }
 
     @Override
-    public List<LicenseProduct> findLicenseProductByLicenseKeyAndProductNameQ(String licenseKey, String productName) {
+    public LicenseProduct findOneLicenseProductByLicenseKeyAndProductNameQ(String licenseKey, String productName) {
         QLicenseProduct licenseProduct = QLicenseProduct.licenseProduct;
         QLicense license = QLicense.license;
         QProduct product = QProduct.product;
@@ -33,6 +31,6 @@ public class LicenseProductRepositoryImpl implements LicenseProductCustom {
                 .on(license.key.eq(licenseKey))
                 .join(licenseProduct.product, product)
                 .on(product.name.eq(productName))
-                .fetch();
+                .fetchOne();
     }
 }

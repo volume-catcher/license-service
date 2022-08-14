@@ -21,7 +21,7 @@ public class LicenseProductDto extends LicenseDto {
     private String productName;
 
     //TODO: 기본 값 초기화 문제 발생
-    private boolean isActivated;
+    private boolean active;
 
     @PositiveOrZero
     private int numOfAuthAvailable;
@@ -30,10 +30,10 @@ public class LicenseProductDto extends LicenseDto {
     @Future
     private LocalDateTime expireAt;
 
-    public LicenseProductDto(String licenseKey, String productName, boolean isActivated, int numOfAuthAvailable, LocalDateTime expireAt) {
+    public LicenseProductDto(String licenseKey, String productName, boolean active, int numOfAuthAvailable, LocalDateTime expireAt) {
         super(licenseKey);
         this.productName = productName;
-        this.isActivated = isActivated;
+        this.active = active;
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.expireAt = expireAt;
     }
@@ -44,7 +44,7 @@ public class LicenseProductDto extends LicenseDto {
         return LicenseProductDto.builder()
                 .licenseKey(licenseProduct.getLicense().getKey())
                 .productName(licenseProduct.getProduct().getName())
-                .isActivated(licenseProduct.getIsActivated())
+                .active(licenseProduct.getIsActivated())
                 .numOfAuthAvailable(licenseProduct.getNumOfAuthAvailable())
                 .expireAt(licenseProduct.getExpireAt())
                 .build();

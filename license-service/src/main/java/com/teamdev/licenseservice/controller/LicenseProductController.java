@@ -1,6 +1,7 @@
 package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.LicenseProductDto;
+import com.teamdev.licenseservice.dto.LicenseProductIsActivatedDto;
 import com.teamdev.licenseservice.service.LicenseProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/license-product")
 public class LicenseProductController {
 
     private final LicenseProductService licenseProductService;
@@ -23,9 +24,13 @@ public class LicenseProductController {
         this.licenseProductService = licenseProductService;
     }
 
-    @PostMapping("license-product")
+    @PostMapping
     public ResponseEntity<LicenseProductDto> createLicenseProduct(@Valid @RequestBody LicenseProductDto licenseProductDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(licenseProductService.createLicenseProduct(licenseProductDto));
     }
 
+    @PostMapping("/isActivated")
+    public ResponseEntity<LicenseProductDto> updateLicenseProductIsActivated(@Valid @RequestBody LicenseProductIsActivatedDto licenseProductIsActivatedDto) {
+        return ResponseEntity.ok(licenseProductService.updateLicenseProductIsActivated(licenseProductIsActivatedDto));
+    }
 }

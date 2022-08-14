@@ -56,6 +56,13 @@ public class GlobalExceptionHandler {
         return getErrorResponseEntity(req, errorCode);
     }
 
+    @ExceptionHandler(NotFoundLicenseProductException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundLicenseProductException(HttpServletRequest req, NotFoundLicenseProductException e) {
+        final ErrorCode errorCode = ErrorCode.LICENSEPRODUCT_NOT_FOUND;
+        logger.debug("{}, license: {}, product: {}", e.getMessage(), e.getLicenseKey(), e.getProductName());
+        return getErrorResponseEntity(req, errorCode);
+    }
+
     private ResponseEntity<ErrorResponse> getErrorResponseEntity(HttpServletRequest req, ErrorCode errorCode) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .errorCode(errorCode.getHttpStatus())
