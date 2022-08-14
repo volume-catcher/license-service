@@ -10,5 +10,4 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Optional<Product> findByName(String name);
     List<Product> findAllByAccountId(String id);
-    List<Product> findAll();
 }
