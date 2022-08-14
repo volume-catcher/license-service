@@ -61,6 +61,10 @@ public class LicenseService {
         return licenseRepository.findAllByAccountId(id).stream().map(LicenseResponseDto::from).collect(Collectors.toList());
     }
 
+    public List<LicenseResponseDto> getAllLicenses() {
+        return licenseRepository.findAll().stream().map(LicenseResponseDto::from).collect(Collectors.toList());
+    }
+
     @Transactional
     public License saveLicenseWithValidAccount(LicenseResponseDto licenseResponseDto) {
         Optional<Account> account = accountRepository.findById(licenseResponseDto.getAccountId());
