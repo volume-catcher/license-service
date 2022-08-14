@@ -30,7 +30,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getLProductsCreatedByMe() {
-        return ResponseEntity.ok(productService.getLProductsCreatedByMe());
+        return ResponseEntity.ok(productService.getProductsCreatedByMe());
     }
 
     @GetMapping("all")

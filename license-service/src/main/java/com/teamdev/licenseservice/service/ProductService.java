@@ -55,7 +55,7 @@ public class ProductService {
         return productResponseDto;
     }
 
-    public List<ProductResponseDto> getLProductsCreatedByMe() {
+    public List<ProductResponseDto> getProductsCreatedByMe() {
         String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
         return productRepository.findAllByAccountId(id).stream().map(ProductResponseDto::from).collect(Collectors.toList());
     }
