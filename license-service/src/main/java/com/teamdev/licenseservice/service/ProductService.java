@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.dto.ProductDto;
+import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.Product;
 import com.teamdev.licenseservice.exception.DuplicateProductException;
@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,6 +53,15 @@ public class ProductService {
         logger.debug("제품을 생성하였습니다, id: {}, 제품: {}", id, productResponseDto.getName());
 
         return productResponseDto;
+    }
+
+    public List<ProductResponseDto> getLProductsCreatedByMe() {
+        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
+        return productRepository.findAllByAccountId(id).stream().map(ProductResponseDto::from).collect(Collectors.toList());
+    }
+
+    public List<ProductResponseDto> getAllProducts() {
+        return productRepository.findAll().stream().map(ProductResponseDto::from).collect(Collectors.toList());
     }
 
     @Transactional

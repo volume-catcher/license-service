@@ -1,5 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
+import com.teamdev.licenseservice.entity.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -19,12 +20,12 @@ public class ProductResponseDto extends ProductDto {
         this.id = id;
     }
 
-    public static ProductResponseDto from(ProductResponseDto productResponseDto) {
-        if (productResponseDto == null) return null;
+    public static ProductResponseDto from(Product product) {
+        if (product == null) return null;
 
         return ProductResponseDto.builder()
-                .id(productResponseDto.getId())
-                .name(productResponseDto.getName())
+                .id(product.getAccount().getId())
+                .name(product.getName())
                 .build();
     }
 }
