@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class LicenseProductService {
 
@@ -62,5 +65,9 @@ public class LicenseProductService {
         licenseProduct.setIsActivated(licenseProductIsActivatedDto.isActive());
 
         return LicenseProductDto.from(licenseProductRepository.save(licenseProduct));
+    }
+
+    public List<LicenseProductDto> getAllLicenseProducts() {
+        return licenseProductRepository.findAll().stream().map(LicenseProductDto::from).collect(Collectors.toList());
     }
 }
