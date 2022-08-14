@@ -1,27 +1,22 @@
 package com.teamdev.licenseservice.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
+@SuperBuilder
 public class LicenseDto {
 
     @NotNull
     @Size(min = 19, max = 19)
-    private String key;
+    protected String licenseKey;
 
-    @NotNull
-    @Size(min = 3, max = 20)
-    private String id;
-
-    @Builder
-    public LicenseDto(String key, String id) {
-        this.key = key;
-        this.id = id;
+    public LicenseDto(String licenseKey) {
+        this.licenseKey = licenseKey;
     }
 }

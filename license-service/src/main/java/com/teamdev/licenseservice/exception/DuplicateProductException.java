@@ -6,9 +6,9 @@ import lombok.Getter;
 public class DuplicateProductException extends RuntimeException{
 
     private static final long serialVersionUID = 7642987668304559589L;
-    private String id;
+    private String name;
 
-    public DuplicateProductException(String id) {
-        this.id = id;
+    public DuplicateProductException(String name) {
+        this.name = name;
     }
 }

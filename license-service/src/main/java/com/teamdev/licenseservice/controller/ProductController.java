@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.controller;
 
+import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.dto.ProductDto;
-import com.teamdev.licenseservice.dto.ReqProductDto;
 import com.teamdev.licenseservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ReqProductDto reqProductDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(reqProductDto));
+    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductDto productDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productDto));
     }
 }

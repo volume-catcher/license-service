@@ -60,7 +60,7 @@ public class LicenseProduct extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist() {
-        this.isActivated = this.isActivated == null ? true : this.isActivated;
+        this.isActivated = this.isActivated == null || this.isActivated;
         this.numOfAuthAvailable = this.numOfAuthAvailable == null ? 1 : this.numOfAuthAvailable;
     }
 }

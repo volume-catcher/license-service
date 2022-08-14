@@ -1,11 +1,12 @@
 package com.teamdev.licenseservice.service;
 
+import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.dto.ProductDto;
-import com.teamdev.licenseservice.dto.ReqProductDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.Product;
 import com.teamdev.licenseservice.exception.DuplicateProductException;
 import com.teamdev.licenseservice.exception.NotFoundAccountException;
+import com.teamdev.licenseservice.exception.NotFoundProductException;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.ProductRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
@@ -32,38 +33,50 @@ public class ProductService {
         this.accountRepository = accountRepository;
     }
 
-    public ProductDto createProduct(ReqProductDto reqProductDto) {
+    @Transactional
+    public ProductResponseDto createProduct(ProductDto productDto) {
         String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
 
-        if (productRepository.findByName(reqProductDto.getName()).isPresent()) {
-            throw new DuplicateProductException(reqProductDto.getName());
+        if (productRepository.findByName(productDto.getName()).isPresent()) {
+            throw new DuplicateProductException(productDto.getName());
         }
 
-        ProductDto productDto = ProductDto.builder()
-                .name(reqProductDto.getName())
+        ProductResponseDto productResponseDto = ProductResponseDto.builder()
+                .name(productDto.getName())
                 .id(id).
                 build();
 
-        saveProductWithValidAccount(productDto);
+        saveProductWithValidAccount(productResponseDto);
 
-        logger.debug("제품을 생성하였습니다, id: {}, 제품: {}", id, productDto.getName());
+        logger.debug("제품을 생성하였습니다, id: {}, 제품: {}", id, productResponseDto.getName());
 
-        return productDto;
+        return productResponseDto;
     }
 
-    public Product saveProductWithValidAccount(ProductDto productDto) {
-        Optional<Account> account = accountRepository.findById(productDto.getId());
+    @Transactional
+    public Product saveProductWithValidAccount(ProductResponseDto productResponseDto) {
+        Optional<Account> account = accountRepository.findById(productResponseDto.getId());
 
         if (account.isEmpty()) {
-            throw new NotFoundAccountException(productDto.getId());
+            throw new NotFoundAccountException(productResponseDto.getId());
         }
 
         Product product = Product.builder()
-                .name(productDto.getName())
+                .name(productResponseDto.getName())
                 .account(account.get())
                 .build();
 
         return productRepository.save(product);
+    }
+
+    public Product getProductByName(ProductDto productDto) {
+        Optional<Product> product = productRepository.findByName(productDto.getName());
+
+        if (product.isEmpty()) {
+            throw new NotFoundProductException(productDto.getName());
+        }
+
+        return product.get();
     }
 
 }
