@@ -1,5 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
+import com.teamdev.licenseservice.entity.License;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,14 @@ public class LicenseResponseDto {
     public LicenseResponseDto(String key, String accountId) {
         this.key = key;
         this.accountId = accountId;
+    }
+
+    public static LicenseResponseDto from(License license) {
+        if (license == null) return null;
+
+        return LicenseResponseDto.builder()
+                .key(license.getKey())
+                .accountId(license.getAccount().getId())
+                .build();
     }
 }

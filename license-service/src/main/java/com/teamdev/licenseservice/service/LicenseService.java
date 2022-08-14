@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,6 +56,11 @@ public class LicenseService {
         return licenseResponseDto;
     }
 
+    public List<LicenseResponseDto> getLicensesCreatedByMe() {
+        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
+        return licenseRepository.findAllByAccountId(id).stream().map(LicenseResponseDto::from).collect(Collectors.toList());
+    }
+
     @Transactional
     public License saveLicenseWithValidAccount(LicenseResponseDto licenseResponseDto) {
         Optional<Account> account = accountRepository.findById(licenseResponseDto.getAccountId());
@@ -79,4 +86,5 @@ public class LicenseService {
 
         return license.get();
     }
+
 }
