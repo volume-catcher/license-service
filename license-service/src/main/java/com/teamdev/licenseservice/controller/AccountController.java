@@ -5,7 +5,6 @@ import com.teamdev.licenseservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,13 +25,11 @@ public class AccountController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<AccountDto> getMyUserInfo() {
         return ResponseEntity.ok(accountService.getMyAccountWithRoles());
     }
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<AccountDto> getUserInfo(@PathVariable String id) {
         return ResponseEntity.ok(accountService.getAccountWithRoles(id));
     }

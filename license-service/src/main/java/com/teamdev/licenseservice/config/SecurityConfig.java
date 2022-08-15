@@ -64,6 +64,12 @@ public class SecurityConfig {
                 .antMatchers("/api/signin").permitAll()
                 .antMatchers("/api/signup").permitAll()
 
+                .antMatchers("/api/license/all").hasAnyRole("ADMIN")
+                .antMatchers("/api/product/all").hasAnyRole("ADMIN")
+                .antMatchers("/api/license-product/all").hasAnyRole("ADMIN")
+                .antMatchers("/api/user").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/user/{id}").hasAnyRole("ADMIN")
+
                 .anyRequest().authenticated()
 
                 .and()
