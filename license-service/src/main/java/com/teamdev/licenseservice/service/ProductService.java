@@ -4,9 +4,7 @@ import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.Product;
-import com.teamdev.licenseservice.exception.DuplicateProductException;
-import com.teamdev.licenseservice.exception.NotFoundAccountException;
-import com.teamdev.licenseservice.exception.NotFoundProductException;
+import com.teamdev.licenseservice.exception.*;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.ProductRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
@@ -24,8 +22,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ProductService {
 
-    private final Logger logger = LoggerFactory.getLogger(ProductService.class);
-
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
 
@@ -37,26 +33,24 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto createProduct(ProductDto productDto) {
-        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
+        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
 
         if (productRepository.findByName(productDto.getName()).isPresent()) {
-            throw new DuplicateProductException(productDto.getName());
+            throw new DuplicatedException(ErrorMessage.PRODUCT_DUPLICATED);
         }
 
         ProductResponseDto productResponseDto = ProductResponseDto.builder()
                 .name(productDto.getName())
-                .id(id).
-                build();
+                .id(id)
+                .build();
 
         saveProductWithValidAccount(productResponseDto);
-
-        logger.debug("제품을 생성하였습니다, id: {}, 제품: {}", id, productResponseDto.getName());
 
         return productResponseDto;
     }
 
     public List<ProductResponseDto> getProductsCreatedByMe() {
-        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
+        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
         return productRepository.findAllByAccountId(id).stream().map(ProductResponseDto::from).collect(Collectors.toList());
     }
 
@@ -69,7 +63,7 @@ public class ProductService {
         Optional<Account> account = accountRepository.findById(productResponseDto.getId());
 
         if (account.isEmpty()) {
-            throw new NotFoundAccountException(productResponseDto.getId());
+            throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND);
         }
 
         Product product = Product.builder()
@@ -84,7 +78,7 @@ public class ProductService {
         Optional<Product> product = productRepository.findByName(productDto.getName());
 
         if (product.isEmpty()) {
-            throw new NotFoundProductException(productDto.getName());
+            throw new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND);
         }
 
         return product.get();

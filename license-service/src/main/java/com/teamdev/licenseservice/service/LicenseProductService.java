@@ -7,8 +7,9 @@ import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.entity.License;
 import com.teamdev.licenseservice.entity.LicenseProduct;
 import com.teamdev.licenseservice.entity.Product;
-import com.teamdev.licenseservice.exception.DuplicateLicenseProductException;
-import com.teamdev.licenseservice.exception.NotFoundLicenseProductException;
+import com.teamdev.licenseservice.exception.DuplicatedException;
+import com.teamdev.licenseservice.exception.ErrorMessage;
+import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.LicenseProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class LicenseProductService {
 
         LicenseProduct preLicenseProduct = licenseProductRepository.findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductDto.getLicenseKey(), licenseProductDto.getProductName());
         if (preLicenseProduct != null) {
-            throw new DuplicateLicenseProductException(licenseProductDto.getLicenseKey(), licenseProductDto.getProductName());
+            throw new DuplicatedException(ErrorMessage.LICENSEPRODUCT_DUPLICATED);
         }
 
         LicenseProduct licenseProduct = LicenseProduct.builder()
@@ -59,7 +60,7 @@ public class LicenseProductService {
 
         LicenseProduct licenseProduct = licenseProductRepository.findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
         if (licenseProduct == null) {
-            throw new NotFoundLicenseProductException(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
+            throw new NotFoundException(ErrorMessage.LICENSEPRODUCT_NOT_FOUND);
         }
 
         licenseProduct.setIsActivated(licenseProductIsActivatedDto.getIsActivated());

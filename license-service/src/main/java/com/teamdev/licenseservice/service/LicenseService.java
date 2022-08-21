@@ -4,8 +4,8 @@ import com.teamdev.licenseservice.dto.LicenseDto;
 import com.teamdev.licenseservice.dto.LicenseResponseDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.License;
-import com.teamdev.licenseservice.exception.NotFoundAccountException;
-import com.teamdev.licenseservice.exception.NotFoundLicenseException;
+import com.teamdev.licenseservice.exception.ErrorMessage;
+import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.license.SerialNumber;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.LicenseRepository;
@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class LicenseService {
 
-    private final Logger logger = LoggerFactory.getLogger(LicenseService.class);
-    
     private final LicenseRepository licenseRepository;
     private final AccountRepository accountRepository;
 
@@ -38,7 +36,7 @@ public class LicenseService {
     @Transactional
     public LicenseResponseDto createLicense() {
         String licenseKey = SerialNumber.getSerialNumber();
-        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
+        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
 
         while (licenseRepository.findByKey(licenseKey).isPresent()) {
             licenseKey = SerialNumber.getSerialNumber();
@@ -50,14 +48,12 @@ public class LicenseService {
                 .build();
         
         saveLicenseWithValidAccount(licenseResponseDto);
-        
-        logger.debug("라이선스를 발급하였습니다, id: {}, 라이선스키: {}", id, licenseKey);
 
         return licenseResponseDto;
     }
 
     public List<LicenseResponseDto> getLicensesCreatedByMe() {
-        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundAccountException(null));
+        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
         return licenseRepository.findAllByAccountId(id).stream().map(LicenseResponseDto::from).collect(Collectors.toList());
     }
 
@@ -70,7 +66,7 @@ public class LicenseService {
         Optional<Account> account = accountRepository.findById(licenseResponseDto.getAccountId());
 
         if (account.isEmpty()) {
-            throw new NotFoundAccountException(licenseResponseDto.getAccountId());
+            throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND);
         }
 
         License license = License.builder()
@@ -85,7 +81,7 @@ public class LicenseService {
         Optional<License> license = licenseRepository.findByKey(licenseDto.getLicenseKey());
 
         if (license.isEmpty()) {
-            throw new NotFoundLicenseException(licenseDto.getLicenseKey());
+            throw new NotFoundException(ErrorMessage.LICENSE_NOT_FOUND);
         }
 
         return license.get();

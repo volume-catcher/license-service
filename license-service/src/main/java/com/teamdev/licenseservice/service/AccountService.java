@@ -4,8 +4,9 @@ import com.teamdev.licenseservice.dto.AccountDto;
 import com.teamdev.licenseservice.dto.RoleDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.Role;
-import com.teamdev.licenseservice.exception.DuplicateAccountException;
-import com.teamdev.licenseservice.exception.NotFoundAccountException;
+import com.teamdev.licenseservice.exception.DuplicatedException;
+import com.teamdev.licenseservice.exception.ErrorMessage;
+import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class AccountService {
     @Transactional
     public AccountDto signUp(AccountDto accountDto) {
         if (accountRepository.findById(accountDto.getId()).isPresent()) {
-            throw new DuplicateAccountException(accountDto.getId());
+            throw new DuplicatedException(ErrorMessage.ACCOUNT_DUPLICATED);
         }
 
         Role role = roleService.getOrSaveRole(RoleDto.builder()
@@ -51,10 +52,10 @@ public class AccountService {
 
     public AccountDto getAccountWithRoles(String id) {
         return AccountDto.from(accountRepository.findOneWithRolesById(id)
-                .orElseThrow(() -> new NotFoundAccountException(id)));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)));
     }
 
     public AccountDto getMyAccountWithRoles() {
-        return AccountDto.from(SecurityUtil.getCurrentId().flatMap(accountRepository::findOneWithRolesById).orElseThrow(() -> new NotFoundAccountException(null)));
+        return AccountDto.from(SecurityUtil.getCurrentId().flatMap(accountRepository::findOneWithRolesById).orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)));
     }
 }
