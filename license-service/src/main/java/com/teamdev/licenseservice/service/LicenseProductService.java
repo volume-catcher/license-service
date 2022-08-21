@@ -45,7 +45,7 @@ public class LicenseProductService {
                 .license(license)
                 .product(product)
                 .numOfAuthAvailable(licenseProductDto.getNumOfAuthAvailable())
-                .isActivated(licenseProductDto.isActive())
+                .isActivated(licenseProductDto.getIsActivated())
                 .expireAt(licenseProductDto.getExpireAt())
                 .build();
 
@@ -62,7 +62,7 @@ public class LicenseProductService {
             throw new NotFoundLicenseProductException(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
         }
 
-        licenseProduct.setIsActivated(licenseProductIsActivatedDto.isActive());
+        licenseProduct.setIsActivated(licenseProductIsActivatedDto.getIsActivated());
 
         return LicenseProductDto.from(licenseProductRepository.save(licenseProduct));
     }

@@ -8,32 +8,23 @@ import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class LicenseProductDto extends LicenseDto {
+public class LicenseProductDto extends LicenseProductIsActivatedDto {
 
     @NotNull
-    @Size(min = 3, max = 45)
-    private String productName;
-
-    //TODO: 기본 값 초기화 문제 발생
-    private boolean active;
-
     @PositiveOrZero
-    private int numOfAuthAvailable;
+    private Integer numOfAuthAvailable;
 
     @NotNull
     @Future
     private LocalDateTime expireAt;
 
-    public LicenseProductDto(String licenseKey, String productName, boolean active, int numOfAuthAvailable, LocalDateTime expireAt) {
-        super(licenseKey);
-        this.productName = productName;
-        this.active = active;
+    public LicenseProductDto(String licenseKey, String productName, Boolean isActivated, Integer numOfAuthAvailable, LocalDateTime expireAt) {
+        super(licenseKey, productName, isActivated);
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.expireAt = expireAt;
     }
@@ -44,7 +35,7 @@ public class LicenseProductDto extends LicenseDto {
         return LicenseProductDto.builder()
                 .licenseKey(licenseProduct.getLicense().getKey())
                 .productName(licenseProduct.getProduct().getName())
-                .active(licenseProduct.getIsActivated())
+                .isActivated(licenseProduct.getIsActivated())
                 .numOfAuthAvailable(licenseProduct.getNumOfAuthAvailable())
                 .expireAt(licenseProduct.getExpireAt())
                 .build();
