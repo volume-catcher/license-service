@@ -50,7 +50,11 @@ public class LicenseProduct extends BaseTimeEntity {
     private Product product;
 
     @Builder
-    public LicenseProduct(Integer numOfAuthAvailable, Boolean isActivated, LocalDateTime expireAt, License license, Product product) {
+    public LicenseProduct(Integer numOfAuthAvailable,
+                          Boolean isActivated,
+                          LocalDateTime expireAt,
+                          License license,
+                          Product product) {
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.isActivated = isActivated;
         this.expireAt = expireAt;

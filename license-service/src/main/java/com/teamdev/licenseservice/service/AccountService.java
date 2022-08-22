@@ -50,6 +50,8 @@ public class AccountService {
     }
 
     public AccountDto getMyAccountWithRoles() {
-        return AccountDto.from(SecurityUtil.getCurrentId().flatMap(accountRepository::findOneWithRolesById).orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)));
+        return AccountDto.from(SecurityUtil.getCurrentId()
+                .flatMap(accountRepository::findOneWithRolesById)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)));
     }
 }

@@ -31,7 +31,8 @@ public class LicenseProductService {
         Product product = productService.getProductByName(ProductDto.builder().name(licenseProductDto.getProductName()).build());
         License license = licenseService.getLicenseByKey(LicenseDto.builder().licenseKey(licenseProductDto.getLicenseKey()).build());
 
-        LicenseProduct preLicenseProduct = licenseProductRepository.findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductDto.getLicenseKey(), licenseProductDto.getProductName());
+        LicenseProduct preLicenseProduct = licenseProductRepository
+                .findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductDto.getLicenseKey(), licenseProductDto.getProductName());
         if (preLicenseProduct != null) {
             throw new DuplicatedException(ErrorMessage.LICENSEPRODUCT_DUPLICATED);
         }
@@ -52,7 +53,8 @@ public class LicenseProductService {
         Product product = productService.getProductByName(ProductDto.builder().name(licenseProductIsActivatedDto.getProductName()).build());
         License license = licenseService.getLicenseByKey(LicenseDto.builder().licenseKey(licenseProductIsActivatedDto.getLicenseKey()).build());
 
-        LicenseProduct licenseProduct = licenseProductRepository.findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
+        LicenseProduct licenseProduct = licenseProductRepository
+                .findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
         if (licenseProduct == null) {
             throw new NotFoundException(ErrorMessage.LICENSEPRODUCT_NOT_FOUND);
         }

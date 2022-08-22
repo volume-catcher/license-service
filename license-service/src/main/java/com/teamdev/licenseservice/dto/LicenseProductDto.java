@@ -23,7 +23,11 @@ public class LicenseProductDto extends LicenseProductIsActivatedDto {
     @Future
     private LocalDateTime expireAt;
 
-    public LicenseProductDto(String licenseKey, String productName, Boolean isActivated, Integer numOfAuthAvailable, LocalDateTime expireAt) {
+    public LicenseProductDto(String licenseKey,
+                             String productName,
+                             Boolean isActivated,
+                             Integer numOfAuthAvailable,
+                             LocalDateTime expireAt) {
         super(licenseKey, productName, isActivated);
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.expireAt = expireAt;
