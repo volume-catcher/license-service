@@ -5,7 +5,6 @@ import com.teamdev.licenseservice.dto.LicenseProductIsActivatedDto;
 import com.teamdev.licenseservice.service.LicenseProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,18 +17,19 @@ public class LicenseProductController {
 
     private final LicenseProductService licenseProductService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<LicenseProductDto> createLicenseProduct(@Valid @RequestBody LicenseProductDto licenseProductDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(licenseProductService.createLicenseProduct(licenseProductDto));
+    public LicenseProductDto createLicenseProduct(@Valid @RequestBody LicenseProductDto licenseProductDto) {
+        return licenseProductService.createLicenseProduct(licenseProductDto);
     }
 
     @PostMapping("/active")
-    public ResponseEntity<LicenseProductDto> updateLicenseProductIsActivated(@Valid @RequestBody LicenseProductIsActivatedDto licenseProductIsActivatedDto) {
-        return ResponseEntity.ok(licenseProductService.updateLicenseProductIsActivated(licenseProductIsActivatedDto));
+    public LicenseProductDto updateLicenseProductIsActivated(@Valid @RequestBody LicenseProductIsActivatedDto licenseProductIsActivatedDto) {
+        return licenseProductService.updateLicenseProductIsActivated(licenseProductIsActivatedDto);
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<LicenseProductDto>> getAllLicenseProducts() {
-        return ResponseEntity.ok(licenseProductService.getAllLicenseProducts());
+    public List<LicenseProductDto> getAllLicenseProducts() {
+        return licenseProductService.getAllLicenseProducts();
     }
 }

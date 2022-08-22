@@ -4,7 +4,6 @@ import com.teamdev.licenseservice.dto.AccountDto;
 import com.teamdev.licenseservice.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,18 +15,19 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public ResponseEntity<AccountDto> signUp(@Valid @RequestBody AccountDto accountDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.signUp(accountDto));
+    public AccountDto signUp(@Valid @RequestBody AccountDto accountDto) {
+        return accountService.signUp(accountDto);
     }
 
     @GetMapping("/user")
-    public ResponseEntity<AccountDto> getMyUserInfo() {
-        return ResponseEntity.ok(accountService.getMyAccountWithRoles());
+    public AccountDto getMyUserInfo() {
+        return accountService.getMyAccountWithRoles();
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<AccountDto> getUserInfo(@PathVariable String id) {
-        return ResponseEntity.ok(accountService.getAccountWithRoles(id));
+    public AccountDto getUserInfo(@PathVariable String id) {
+        return accountService.getAccountWithRoles(id);
     }
 }

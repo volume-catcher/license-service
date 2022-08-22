@@ -5,7 +5,6 @@ import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,18 +17,19 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductDto productDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productDto));
+    public ProductResponseDto createProduct(@Valid @RequestBody ProductDto productDto) {
+        return productService.createProduct(productDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getLProductsCreatedByMe() {
-        return ResponseEntity.ok(productService.getProductsCreatedByMe());
+    public List<ProductResponseDto> getLProductsCreatedByMe() {
+        return productService.getProductsCreatedByMe();
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public List<ProductResponseDto> getAllProducts() {
+        return productService.getAllProducts();
     }
 }
