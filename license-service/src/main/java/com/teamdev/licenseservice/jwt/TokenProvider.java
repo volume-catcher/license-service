@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Arrays;
@@ -62,9 +61,8 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
-    public String getToken(ServletRequest request) {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String bearerToken = httpServletRequest.getHeader(authorizationHeader);
+    public String getToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(authorizationHeader);
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(authorizationBearer)) {
             return bearerToken.substring(7);
