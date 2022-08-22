@@ -3,8 +3,6 @@ package com.teamdev.licenseservice.handler;
 import com.teamdev.licenseservice.dto.ErrorDto;
 import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
