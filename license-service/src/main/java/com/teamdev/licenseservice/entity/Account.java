@@ -1,30 +1,44 @@
 package com.teamdev.licenseservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
-@NoArgsConstructor
+@Table
 public class Account {
 
     @Id
-    @Column(name = "account_id")
+    @Column(name = "account_id", columnDefinition ="VARCHAR(20)", updatable = false)
     @Size(max = 20)
     @Comment("계정ID")
     private String id;
 
     @Column(name = "password", nullable = false)
-    @Size(max = 20)
+    @Size(max = 60)
     @Comment("비밀번호")
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", nullable = false)
-    @JsonIgnore
-    @Comment("역할ID")
-    private Role role;
+    //TODO: 2022.08.03.영속성관리 CASCADE 어떻게 할지 고민하기
+    @ManyToMany
+    @JoinTable(
+            name="account_role",
+            joinColumns={@JoinColumn(name = "account_id")},
+            inverseJoinColumns={@JoinColumn(name="role_id")})
+    private Set<Role> roles;
+
+    @Builder
+    public Account(String id, String password, Set<Role> roles) {
+        this.id = id;
+        this.password = password;
+        this.roles = roles;
+    }
 }

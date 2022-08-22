@@ -1,50 +1,66 @@
 package com.teamdev.licenseservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "license_product")
-@NoArgsConstructor
-public class LicenseProduct {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Entity
+@Table(name = "license_product")
+public class LicenseProduct extends BaseTimeEntity {
 
     @Id
-    @Column(name = "license_product_id", columnDefinition ="INT(10) UNSIGNED")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "license_product_id", columnDefinition ="INT(11) UNSIGNED")
     @Comment("라이선스_제품ID")
     private Integer id;
 
-    @Column(name = "num_of_auth_available", columnDefinition ="INT(10) UNSIGNED DEFAULT 1", nullable = false)
+    @Column(name = "num_of_auth_available", columnDefinition ="INT(10) UNSIGNED", nullable = false)
+    @ColumnDefault("1")
     @Comment("제품별 인증 가능 횟수")
     private Integer numOfAuthAvailable;
 
-    @Column(name = "is_activated", columnDefinition = "BOOLEAN DEFAULT TRUE", nullable = false)
+    @Column(name = "is_activated", nullable = false)
+    @ColumnDefault("TRUE")
     @Comment("활성여부")
     private Boolean isActivated;
-
-    @Column(name = "create_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", nullable = false)
-    @Comment("생성일시")
-    private LocalDateTime createAt;
-
-    @Column(name = "update_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", nullable = false)
-    @Comment("수정일시")
-    private LocalDateTime updateAt;
 
     @Column(name = "expire_at", nullable = false)
     @Comment("만료일시")
     private LocalDateTime expireAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "license_key", nullable = false)
+    @JoinColumn(name = "license_key", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("라이선스키")
     private License license;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("제품ID")
     private Product product;
+
+    @Builder
+    public LicenseProduct(Integer numOfAuthAvailable, Boolean isActivated, LocalDateTime expireAt, License license, Product product) {
+        this.numOfAuthAvailable = numOfAuthAvailable;
+        this.isActivated = isActivated;
+        this.expireAt = expireAt;
+        this.license = license;
+        this.product = product;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.isActivated = this.isActivated == null ? true : this.isActivated;
+        this.numOfAuthAvailable = this.numOfAuthAvailable == null ? 1 : this.numOfAuthAvailable;
+    }
 }
