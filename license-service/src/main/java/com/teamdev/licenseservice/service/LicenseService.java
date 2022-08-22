@@ -10,9 +10,7 @@ import com.teamdev.licenseservice.license.SerialNumber;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.LicenseRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,16 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class LicenseService {
 
     private final LicenseRepository licenseRepository;
     private final AccountRepository accountRepository;
-
-    @Autowired
-    public LicenseService(LicenseRepository licenseRepository, AccountRepository accountRepository) {
-        this.licenseRepository = licenseRepository;
-        this.accountRepository = accountRepository;
-    }
 
     @Transactional
     public LicenseResponseDto createLicense() {

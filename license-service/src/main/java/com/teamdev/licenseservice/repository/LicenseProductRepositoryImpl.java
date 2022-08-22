@@ -5,18 +5,14 @@ import com.teamdev.licenseservice.entity.LicenseProduct;
 import com.teamdev.licenseservice.entity.QLicense;
 import com.teamdev.licenseservice.entity.QLicenseProduct;
 import com.teamdev.licenseservice.entity.QProduct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class LicenseProductRepositoryImpl implements LicenseProductCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    @Autowired
-    public LicenseProductRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
-        this.jpaQueryFactory = jpaQueryFactory;
-    }
 
     @Override
     public LicenseProduct findOneLicenseProductByLicenseKeyAndProductNameQ(String licenseKey, String productName) {

@@ -2,7 +2,7 @@ package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.LicenseResponseDto;
 import com.teamdev.licenseservice.service.LicenseService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,14 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/license")
+@RequiredArgsConstructor
 public class LicenseController {
 
     private final LicenseService licenseService;
-
-    @Autowired
-    public LicenseController(LicenseService licenseService) {
-        this.licenseService = licenseService;
-    }
 
     @PostMapping
     public ResponseEntity<LicenseResponseDto> createLicense() {

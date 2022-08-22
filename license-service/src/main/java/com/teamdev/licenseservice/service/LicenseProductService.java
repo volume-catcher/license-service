@@ -11,7 +11,7 @@ import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.LicenseProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,18 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LicenseProductService {
 
     private final LicenseProductRepository licenseProductRepository;
     private final ProductService productService;
     private final LicenseService licenseService;
-
-    @Autowired
-    public LicenseProductService(LicenseProductRepository licenseProductRepository, ProductService productService, LicenseService licenseService) {
-        this.licenseProductRepository = licenseProductRepository;
-        this.productService = productService;
-        this.licenseService = licenseService;
-    }
 
     @Transactional
     public LicenseProductDto createLicenseProduct(LicenseProductDto licenseProductDto) {

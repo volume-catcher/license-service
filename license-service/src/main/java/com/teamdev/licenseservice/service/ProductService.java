@@ -4,13 +4,13 @@ import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.Product;
-import com.teamdev.licenseservice.exception.*;
+import com.teamdev.licenseservice.exception.DuplicatedException;
+import com.teamdev.licenseservice.exception.ErrorMessage;
+import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.ProductRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,16 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
-
-    @Autowired
-    public ProductService(ProductRepository productRepository, AccountRepository accountRepository) {
-        this.productRepository = productRepository;
-        this.accountRepository = accountRepository;
-    }
 
     @Transactional
     public ProductResponseDto createProduct(ProductDto productDto) {

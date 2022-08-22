@@ -2,7 +2,7 @@ package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.repository.AccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,15 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component("userDetailsService")
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
-
-    @Autowired
-    public CustomUserDetailsService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) {

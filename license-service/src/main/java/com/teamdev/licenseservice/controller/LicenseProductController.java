@@ -3,7 +3,7 @@ package com.teamdev.licenseservice.controller;
 import com.teamdev.licenseservice.dto.LicenseProductDto;
 import com.teamdev.licenseservice.dto.LicenseProductIsActivatedDto;
 import com.teamdev.licenseservice.service.LicenseProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/license-product")
+@RequiredArgsConstructor
 public class LicenseProductController {
 
     private final LicenseProductService licenseProductService;
-
-    @Autowired
-    public LicenseProductController(LicenseProductService licenseProductService) {
-        this.licenseProductService = licenseProductService;
-    }
 
     @PostMapping
     public ResponseEntity<LicenseProductDto> createLicenseProduct(@Valid @RequestBody LicenseProductDto licenseProductDto) {

@@ -9,7 +9,7 @@ import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,18 +18,12 @@ import java.util.Collections;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AccountService {
 
     private final AccountRepository accountRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public AccountService(AccountRepository accountRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
-        this.accountRepository = accountRepository;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Transactional
     public AccountDto signUp(AccountDto accountDto) {

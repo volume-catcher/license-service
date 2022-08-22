@@ -2,7 +2,7 @@ package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.SignInDto;
 import com.teamdev.licenseservice.jwt.TokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,20 +20,15 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    public final String authorizationHeader;
-    public final String authorizationBearer;
-
-    @Autowired
-    public AuthController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, @Value("${jwt.header}") String authorizationHeader, @Value("${jwt.bearer}") String authorizationBearer) {
-        this.authorizationHeader = authorizationHeader;
-        this.authorizationBearer = authorizationBearer;
-        this.tokenProvider = tokenProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-    }
+    @Value("${jwt.header}")
+    public String authorizationHeader;
+    @Value("${jwt.bearer}")
+    public String authorizationBearer;
 
     @PostMapping("/signin")
     public ResponseEntity signIn(@Valid @RequestBody SignInDto signInDto) {

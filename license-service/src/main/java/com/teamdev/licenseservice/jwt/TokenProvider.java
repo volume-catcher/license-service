@@ -30,25 +30,22 @@ public class TokenProvider implements InitializingBean {
 
     private static final String ROLE_KEY = "role";
 
-    public final String authorizationHeader;
-    public final String authorizationBearer;
-    private final String secret;
-    private final long tokenValidityInMilliseconds;
+    @Value("${jwt.header}")
+    public String authorizationHeader;
+    @Value("${jwt.bearer}")
+    public String authorizationBearer;
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.token-validity-in-seconds}")
+    private long tokenValidityInMilliseconds;
 
     private Key key;
-
-    public TokenProvider(@Value("${jwt.header}") String authorizationHeader, @Value("${jwt.bearer}") String authorizationBearer, @Value("${jwt.secret}") String secret, @Value("${jwt.token-validity-in-seconds}") long tokenValidityInMilliseconds) {
-        this.authorizationHeader = authorizationHeader;
-        this.authorizationBearer = authorizationBearer;
-        this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInMilliseconds * 1000;
-    }
-
 
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.tokenValidityInMilliseconds *= 1000;
     }
 
     public String createToken(Authentication authentication) {
