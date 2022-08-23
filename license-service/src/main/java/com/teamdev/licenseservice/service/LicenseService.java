@@ -5,6 +5,7 @@ import com.teamdev.licenseservice.dto.LicenseResponseDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.License;
 import com.teamdev.licenseservice.exception.ErrorMessage;
+import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.license.SerialNumber;
 import com.teamdev.licenseservice.repository.AccountRepository;
@@ -45,8 +46,10 @@ public class LicenseService {
         return licenseResponseDto;
     }
 
-    public List<LicenseResponseDto> getLicensesCreatedByMe() {
-        String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
+    public List<LicenseResponseDto> getLicenseCreatedById(String id) {
+        if (!SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)).equals(id)) {
+            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
+        }
         return licenseRepository.findAllByAccountId(id).stream().map(LicenseResponseDto::from).collect(Collectors.toList());
     }
 

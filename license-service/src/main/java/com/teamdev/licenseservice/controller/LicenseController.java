@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/license")
+@RequestMapping("/api/v1/license")
 @RequiredArgsConstructor
 public class LicenseController {
 
@@ -21,12 +21,12 @@ public class LicenseController {
         return licenseService.createLicense();
     }
 
-    @GetMapping
-    public List<LicenseResponseDto> getLicensesCreatedByMe() {
-        return licenseService.getLicensesCreatedByMe();
+    @GetMapping("/{id}")
+    public List<LicenseResponseDto> getLicenseCreatedById(@PathVariable String id) {
+        return licenseService.getLicenseCreatedById(id);
     }
 
-    @GetMapping("all")
+    @GetMapping
     public List<LicenseResponseDto> getAllLicenses() {
         return licenseService.getAllLicenses();
     }

@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/license-product")
+@RequestMapping("/api/v1/license-product")
 @RequiredArgsConstructor
 public class LicenseProductController {
 
@@ -23,12 +23,12 @@ public class LicenseProductController {
         return licenseProductService.createLicenseProduct(licenseProductDto);
     }
 
-    @PostMapping("/active")
+    @PatchMapping
     public LicenseProductDto updateLicenseProductIsActivated(@Valid @RequestBody LicenseProductIsActivatedDto licenseProductIsActivatedDto) {
         return licenseProductService.updateLicenseProductIsActivated(licenseProductIsActivatedDto);
     }
 
-    @GetMapping("all")
+    @GetMapping
     public List<LicenseProductDto> getAllLicenseProducts() {
         return licenseProductService.getAllLicenseProducts();
     }

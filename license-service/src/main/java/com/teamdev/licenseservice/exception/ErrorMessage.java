@@ -14,6 +14,8 @@ public enum ErrorMessage {
     LICENSE_NOT_FOUND("라이선스를 찾을 수 없습니다"),
     LICENSEPRODUCT_NOT_FOUND("라이선스-제품를 찾을 수 없습니다"),
     LICENSEPRODUCT_DUPLICATED("이미 존재하는 라이선스-제품입니다"),
+
+    FORBIDDEN("잘못된 요청입니다"),
     ;
 
     private final String message;

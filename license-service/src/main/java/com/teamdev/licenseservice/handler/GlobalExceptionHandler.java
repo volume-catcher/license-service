@@ -2,6 +2,7 @@ package com.teamdev.licenseservice.handler;
 
 import com.teamdev.licenseservice.dto.ErrorDto;
 import com.teamdev.licenseservice.exception.DuplicatedException;
+import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicatedException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorDto handleDuplicatedException(HttpServletRequest req, DuplicatedException e) {
+        return new ErrorDto(e.getMessage(), LocalDateTime.now(), req.getRequestURL().toString());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ErrorDto handleForbiddenException(HttpServletRequest req, ForbiddenException e) {
         return new ErrorDto(e.getMessage(), LocalDateTime.now(), req.getRequestURL().toString());
     }
 

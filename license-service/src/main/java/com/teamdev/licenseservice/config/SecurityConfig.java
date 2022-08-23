@@ -7,6 +7,7 @@ import com.teamdev.licenseservice.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -54,15 +55,14 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/api/signin").permitAll()
-                .antMatchers("/api/signup").permitAll()
+                .antMatchers("/api/v1/signin").permitAll()
+                .antMatchers("/api/v1/signup").permitAll()
                 .antMatchers("/v3/api-docs", "/v3/api-docs/swagger-config", "/swagger-ui/**").permitAll()
 
-                .antMatchers("/api/license/all").hasAnyRole("ADMIN")
-                .antMatchers("/api/product/all").hasAnyRole("ADMIN")
-                .antMatchers("/api/license-product/all").hasAnyRole("ADMIN")
-                .antMatchers("/api/user").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/user/{id}").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/license").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/product").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/license-product").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/user/{id}").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
 

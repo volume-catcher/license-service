@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -23,12 +23,12 @@ public class ProductController {
         return productService.createProduct(productDto);
     }
 
-    @GetMapping
-    public List<ProductResponseDto> getLProductsCreatedByMe() {
-        return productService.getProductsCreatedByMe();
+    @GetMapping("/{id}")
+    public List<ProductResponseDto> getProductsCreatedById(@PathVariable String id) {
+        return productService.getProductsCreatedById(id);
     }
 
-    @GetMapping("all")
+    @GetMapping
     public List<ProductResponseDto> getAllProducts() {
         return productService.getAllProducts();
     }
