@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.SignInDto;
-import com.teamdev.licenseservice.dto.TokenDto;
+import com.teamdev.licenseservice.dto.AuthDto;
 import com.teamdev.licenseservice.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +16,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public TokenDto signIn(SignInDto signInDto) {
+    public AuthDto signIn(SignInDto signInDto) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(signInDto.getId(), signInDto.getPassword());
 
@@ -24,7 +24,7 @@ public class AuthService {
 
         String jwt = tokenProvider.createToken(authentication);
 
-        return new TokenDto(jwt);
+        return new AuthDto(jwt);
     }
 
 }

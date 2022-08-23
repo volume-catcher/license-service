@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.SignInDto;
-import com.teamdev.licenseservice.dto.TokenDto;
+import com.teamdev.licenseservice.dto.AuthDto;
 import com.teamdev.licenseservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signin")
-    public TokenDto signIn(@Valid @RequestBody SignInDto signInDto) {
+    public AuthDto signIn(@Valid @RequestBody SignInDto signInDto) {
         return authService.signIn(signInDto);
     }
 
