@@ -1,19 +1,30 @@
 package com.teamdev.licenseservice.dto;
 
 import com.teamdev.licenseservice.entity.LicenseProduct;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@SuperBuilder
-public class LicenseProductDto extends LicenseProductIsActivatedDto {
+public class LicenseProductDto {
+
+    @NotNull
+    @Size(min = 19, max = 19)
+    private String licenseKey;
+
+    @NotNull
+    @Size(min = 3, max = 45)
+    private String productName;
+
+    @NotNull
+    private Boolean isActivated;
 
     @NotNull
     @PositiveOrZero
@@ -23,12 +34,15 @@ public class LicenseProductDto extends LicenseProductIsActivatedDto {
     @Future
     private LocalDateTime expireAt;
 
+    @Builder
     public LicenseProductDto(String licenseKey,
                              String productName,
                              Boolean isActivated,
                              Integer numOfAuthAvailable,
                              LocalDateTime expireAt) {
-        super(licenseKey, productName, isActivated);
+        this.licenseKey = licenseKey;
+        this.productName = productName;
+        this.isActivated = isActivated;
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.expireAt = expireAt;
     }

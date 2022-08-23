@@ -1,17 +1,20 @@
 package com.teamdev.licenseservice.dto;
 
 import com.teamdev.licenseservice.entity.LicenseProduct;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-@SuperBuilder
-public class LicenseProductIsActivatedDto extends LicenseDto {
+public class LicenseProductIsActivatedDto {
+
+    @NotNull
+    @Size(min = 19, max = 19)
+    private String licenseKey;
 
     @NotNull
     @Size(min = 3, max = 45)
@@ -20,6 +23,7 @@ public class LicenseProductIsActivatedDto extends LicenseDto {
     @NotNull
     private Boolean isActivated;
 
+    @Builder
     public LicenseProductIsActivatedDto(String licenseKey, String productName, Boolean isActivated) {
         this.licenseKey = licenseKey;
         this.productName = productName;
