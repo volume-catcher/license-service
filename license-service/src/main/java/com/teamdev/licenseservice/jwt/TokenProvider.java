@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,23 +27,22 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
 
     private static final String ROLE_KEY = "role";
+    private static final String HTTP_AUTHORIZATION_SCHEME_BEARER = "Bearer";
 
-    @Value("${jwt.header}")
-    public String authorizationHeader;
-    @Value("${jwt.bearer}")
-    public String authorizationBearer;
-    @Value("${jwt.secret}")
-    private String secret;
-    @Value("${jwt.token-validity-in-seconds}")
-    private long tokenValidityInMilliseconds;
+    private final String secret;
+    private final long tokenValidityInMilliseconds;
 
     private Key key;
+
+    public TokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.token-validity-in-seconds}") long tokenValidityInMilliseconds) {
+        this.secret = secret;
+        this.tokenValidityInMilliseconds = tokenValidityInMilliseconds * 1000;
+    }
 
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.tokenValidityInMilliseconds *= 1000;
     }
 
     public String createToken(Authentication authentication) {
@@ -62,9 +62,9 @@ public class TokenProvider implements InitializingBean {
     }
 
     public String getToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(authorizationHeader);
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(authorizationBearer)) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HTTP_AUTHORIZATION_SCHEME_BEARER)) {
             return bearerToken.substring(7);
         }
 
