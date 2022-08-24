@@ -1,43 +1,36 @@
 package com.teamdev.licenseservice.handler;
 
-import com.teamdev.licenseservice.exception.DuplicateAccountException;
-import com.teamdev.licenseservice.exception.ErrorCode;
-import com.teamdev.licenseservice.exception.ErrorResponse;
-import com.teamdev.licenseservice.exception.NotFoundAccountException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import com.teamdev.licenseservice.dto.ErrorDto;
+import com.teamdev.licenseservice.exception.DuplicatedException;
+import com.teamdev.licenseservice.exception.ForbiddenException;
+import com.teamdev.licenseservice.exception.NotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-    @ExceptionHandler(NotFoundAccountException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundAccountException(HttpServletRequest req,  NotFoundAccountException e) {
-        logger.debug("계정을 찾을 수 없습니다, id: {}", e.getId());
-        final ErrorCode errorCode = ErrorCode.ACCOUNT_NOT_FOUND;
-        return getErrorResponseEntity(req, errorCode);
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorDto handleNotFoundException(HttpServletRequest req, NotFoundException e) {
+        return new ErrorDto(e.getMessage(), LocalDateTime.now(), req.getRequestURL().toString());
     }
 
-    @ExceptionHandler(DuplicateAccountException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateAccountException(HttpServletRequest req, DuplicateAccountException e) {
-        logger.debug("이미 존재하는 계정입니다, id: {}", e.getId());
-        final ErrorCode errorCode = ErrorCode.ACCOUNT_DUPLICATE;
-        return getErrorResponseEntity(req, errorCode);
+    @ExceptionHandler(DuplicatedException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public ErrorDto handleDuplicatedException(HttpServletRequest req, DuplicatedException e) {
+        return new ErrorDto(e.getMessage(), LocalDateTime.now(), req.getRequestURL().toString());
     }
 
-    private ResponseEntity<ErrorResponse> getErrorResponseEntity(HttpServletRequest req, ErrorCode errorCode) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .errorCode(errorCode.getHttpStatus())
-                .ErrorMsg(errorCode.getMessage())
-                .requestURL(req.getRequestURL().toString())
-                .build();
-
-        return new ResponseEntity<>(errorResponse, errorResponse.getErrorCode());
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ErrorDto handleForbiddenException(HttpServletRequest req, ForbiddenException e) {
+        return new ErrorDto(e.getMessage(), LocalDateTime.now(), req.getRequestURL().toString());
     }
+
 }

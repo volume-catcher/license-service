@@ -3,29 +3,31 @@ package com.teamdev.licenseservice.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class TokenProvider implements InitializingBean {
 
-    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-
     private static final String ROLE_KEY = "role";
+    private static final String HTTP_AUTHORIZATION_SCHEME_BEARER = "Bearer";
 
     private final String secret;
     private final long tokenValidityInMilliseconds;
@@ -37,9 +39,8 @@ public class TokenProvider implements InitializingBean {
         this.tokenValidityInMilliseconds = tokenValidityInMilliseconds * 1000;
     }
 
-
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -58,6 +59,17 @@ public class TokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    public String getToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HTTP_AUTHORIZATION_SCHEME_BEARER)) {
+            return bearerToken.substring(7);
+        }
+
+        log.debug("토큰을 찾을 수 없습니다.");
+        return null;
     }
 
     public Authentication getAuthentication(String token) {
@@ -79,17 +91,18 @@ public class TokenProvider implements InitializingBean {
     }
 
     public boolean validateToken(String token) {
+        //TODO: 에러 메세지 내용 추가하기
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.info("잘못된 JWT 서명입니다.");
+            log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            logger.info("만료된 JWT 토큰입니다.");
+            log.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            logger.info("지원되지 않는 JWT 토큰입니다.");
+            log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            logger.info("JWT 토큰이 잘못되었습니다.");
+            log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
     }

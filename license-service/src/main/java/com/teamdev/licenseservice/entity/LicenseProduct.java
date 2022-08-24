@@ -1,10 +1,7 @@
 package com.teamdev.licenseservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
@@ -23,16 +20,19 @@ public class LicenseProduct extends BaseTimeEntity {
     @Comment("라이선스_제품ID")
     private Integer id;
 
+    @Setter
     @Column(name = "num_of_auth_available", columnDefinition ="INT(10) UNSIGNED", nullable = false)
     @ColumnDefault("1")
     @Comment("제품별 인증 가능 횟수")
     private Integer numOfAuthAvailable;
 
+    @Setter
     @Column(name = "is_activated", nullable = false)
     @ColumnDefault("TRUE")
     @Comment("활성여부")
     private Boolean isActivated;
 
+    @Setter
     @Column(name = "expire_at", nullable = false)
     @Comment("만료일시")
     private LocalDateTime expireAt;
@@ -50,7 +50,11 @@ public class LicenseProduct extends BaseTimeEntity {
     private Product product;
 
     @Builder
-    public LicenseProduct(Integer numOfAuthAvailable, Boolean isActivated, LocalDateTime expireAt, License license, Product product) {
+    public LicenseProduct(Integer numOfAuthAvailable,
+                          Boolean isActivated,
+                          LocalDateTime expireAt,
+                          License license,
+                          Product product) {
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.isActivated = isActivated;
         this.expireAt = expireAt;
@@ -60,7 +64,7 @@ public class LicenseProduct extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist() {
-        this.isActivated = this.isActivated == null ? true : this.isActivated;
+        this.isActivated = this.isActivated == null || this.isActivated;
         this.numOfAuthAvailable = this.numOfAuthAvailable == null ? 1 : this.numOfAuthAvailable;
     }
 }

@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TokenDto {
+public class AuthDto {
 
     private String token;
 
     @Builder
-    public TokenDto(String token) {
+    public AuthDto(String token) {
         this.token = token;
     }
 }
