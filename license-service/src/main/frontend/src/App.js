@@ -6,7 +6,8 @@ import NotFound from 'pages/NotFound';
 import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
 import Product from 'pages/Product';
-import CollapsibleTable from 'components/CollapsibleTable';
+import ProductList from 'components/ProductList';
+import LicenseDetail from 'components/LicenseDetail';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
 			<Route path="/product" element={<Product />}></Route>
 			<Route path="/signin" element={<SignIn />}></Route>
 			<Route path="/signup" element={<SignUp />}></Route>
-			<Route path="/detail" element={<CollapsibleTable />}></Route>
+			<Route path="/licensedetail" element={<LicenseDetail />}></Route>
+			<Route path="/detail" element={<ProductList />}></Route>
 			<Route path="*" element={<NotFound />}></Route>
 		</Routes>
 	</BrowserRouter>

@@ -18,6 +18,7 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import SearchIcon from '@mui/icons-material/Search';
 import { TextField } from '@mui/material';
+import LicenseModal from './LicenseModal';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -114,10 +115,12 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function SearchTable(props) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+export default function LicenseList(props) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchWord, setSearchWord] = useState("");
+  const [openModal, setOpenModal] = useState(false);  
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -133,7 +136,6 @@ export default function SearchTable(props) {
   };
 
   return (
-    <>
     <Paper sx={{ minWidth: 500 }} >
     <Search>
       <SearchIconWrapper>
@@ -167,7 +169,8 @@ export default function SearchTable(props) {
               .includes(searchWord.toString().toLowerCase()) 
           )
           .map((item) => (
-            <TableRow key={item.id} hover>
+            <>
+            <TableRow key={item.id} hover onClick={() => setOpenModal(true)}>
               <TableCell component="th" scope="row">
                 {item.id}
               </TableCell>
@@ -175,6 +178,8 @@ export default function SearchTable(props) {
                 {item.name}
               </TableCell>
             </TableRow>
+            <LicenseModal openModal={openModal} setOpenModal={setOpenModal} />
+            </>
           ))}
 
           {emptyRows > 0 && (
@@ -206,6 +211,5 @@ export default function SearchTable(props) {
       </Table>
     </TableContainer>
     </Paper>
-    </>
   );
 }

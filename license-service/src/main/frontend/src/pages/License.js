@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import SearchTable from 'components/SearchTable';
+import LicenseList from 'components/LicenseList';
 
 const theme = createTheme({
 	palette: {
@@ -80,7 +80,10 @@ const License = (props) => {
 			<Box sx={{ 
 				backgroundColor: 'neutral.main', 
 				mt: 5,
-				padding: 1
+				padding: 1,
+				display:'flex',
+				alignItems:'center',
+				justifyContent:'center'
 			}}>
 				UEOI-39NG-WKF2-SKE9
 			</Box>
@@ -97,7 +100,7 @@ const License = (props) => {
 			전체 라이선스 목록
 		</Typography>
 		<Box sx={{ mt: 3 }}>
-			<SearchTable rows={rows} columns={columns} searchPlaceHolder="라이선스 키 검색"/>
+			<LicenseList rows={rows} columns={columns} searchPlaceHolder="라이선스 키 검색"/>
 		</Box>
 		</Container>
 		</Grid>
