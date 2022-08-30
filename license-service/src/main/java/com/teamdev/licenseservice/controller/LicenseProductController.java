@@ -35,7 +35,7 @@ public class LicenseProductController {
     }
 
     @GetMapping("/license")
-    public List<LicenseProductDto> getProductsByLicenseKey(@Valid @RequestBody LicenseDto licenseDto) {
+    public List<LicenseProductDto> getLicenseProductsByLicenseKey(@Valid @RequestBody LicenseDto licenseDto) {
         return licenseProductService.getLicenseProductsByLicenseKey(licenseDto);
     }
 }
