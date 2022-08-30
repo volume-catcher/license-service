@@ -1,9 +1,6 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.LicenseDto;
-import com.teamdev.licenseservice.dto.LicenseProductDto;
-import com.teamdev.licenseservice.dto.LicenseProductIsActivatedDto;
-import com.teamdev.licenseservice.dto.ProductDto;
+import com.teamdev.licenseservice.dto.*;
 import com.teamdev.licenseservice.entity.License;
 import com.teamdev.licenseservice.entity.LicenseProduct;
 import com.teamdev.licenseservice.entity.Product;
@@ -63,5 +60,13 @@ public class LicenseProductService {
 
     public List<LicenseProductDto> getAllLicenseProducts() {
         return licenseProductRepository.findAll().stream().map(LicenseProductDto::from).collect(Collectors.toList());
+    }
+
+    public List<LicenseProductDto> getLicenseProductsByLicenseKey(LicenseDto licenseDto) {
+        return licenseProductRepository
+                .findLicenseProductWithProductByLicenseKey(licenseDto.getLicenseKey())
+                .stream()
+                .map(LicenseProductDto::from)
+                .collect(Collectors.toList());
     }
 }

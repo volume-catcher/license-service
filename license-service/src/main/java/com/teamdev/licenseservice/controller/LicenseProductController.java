@@ -1,5 +1,6 @@
 package com.teamdev.licenseservice.controller;
 
+import com.teamdev.licenseservice.dto.LicenseDto;
 import com.teamdev.licenseservice.dto.LicenseProductDto;
 import com.teamdev.licenseservice.dto.LicenseProductIsActivatedDto;
 import com.teamdev.licenseservice.service.LicenseProductService;
@@ -31,5 +32,10 @@ public class LicenseProductController {
     @GetMapping
     public List<LicenseProductDto> getAllLicenseProducts() {
         return licenseProductService.getAllLicenseProducts();
+    }
+
+    @GetMapping("/license")
+    public List<LicenseProductDto> getProductsByLicenseKey(@Valid @RequestBody LicenseDto licenseDto) {
+        return licenseProductService.getLicenseProductsByLicenseKey(licenseDto);
     }
 }
