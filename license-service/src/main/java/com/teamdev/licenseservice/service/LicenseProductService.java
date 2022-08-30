@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LicenseProductService {
 
     private final LicenseProductRepository licenseProductRepository;
@@ -49,6 +50,7 @@ public class LicenseProductService {
     public LicenseProductDto updateLicenseProductIsActivated(LicenseProductIsActivatedDto licenseProductIsActivatedDto) {
         LicenseProduct licenseProduct = licenseProductRepository
                 .findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
+
         if (licenseProduct == null) {
             throw new NotFoundException(ErrorMessage.LICENSEPRODUCT_NOT_FOUND);
         }
@@ -58,13 +60,30 @@ public class LicenseProductService {
         return LicenseProductDto.from(licenseProductRepository.save(licenseProduct));
     }
 
+    @Transactional
+    public LicenseProductDto updateLicenseProduct(LicenseProductDto licenseProductDto) {
+        LicenseProduct licenseProduct = licenseProductRepository
+                .findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductDto.getLicenseKey(), licenseProductDto.getProductName());
+
+        if (licenseProduct == null) {
+            throw new NotFoundException(ErrorMessage.LICENSEPRODUCT_NOT_FOUND);
+        }
+
+        licenseProduct.setIsActivated(licenseProductDto.getIsActivated());
+        licenseProduct.setNumOfAuthAvailable(licenseProductDto.getNumOfAuthAvailable());
+        licenseProduct.setExpireAt(licenseProductDto.getExpireAt());
+
+        return LicenseProductDto.from(licenseProductRepository.save(licenseProduct));
+    }
+
+
     public List<LicenseProductDto> getAllLicenseProducts() {
         return licenseProductRepository.findAll().stream().map(LicenseProductDto::from).collect(Collectors.toList());
     }
 
-    public List<LicenseProductDto> getLicenseProductsByLicenseKey(LicenseDto licenseDto) {
+    public List<LicenseProductDto> getLicenseProductsByLicenseKey(String licenseKey) {
         return licenseProductRepository
-                .findLicenseProductWithProductByLicenseKey(licenseDto.getLicenseKey())
+                .findLicenseProductWithProductByLicenseKey(licenseKey)
                 .stream()
                 .map(LicenseProductDto::from)
                 .collect(Collectors.toList());

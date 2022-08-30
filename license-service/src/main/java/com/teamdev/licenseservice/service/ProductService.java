@@ -1,6 +1,5 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.LicenseDto;
 import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.entity.Account;
@@ -86,9 +85,9 @@ public class ProductService {
         return product.get();
     }
 
-    public List<ProductResponseDto> getProductsByLicenseKey(LicenseDto licenseDto) {
+    public List<ProductResponseDto> getProductsByLicenseKey(String licenseKey) {
         return licenseProductRepository
-                .findLicenseProductWithProductByLicenseKey(licenseDto.getLicenseKey())
+                .findLicenseProductWithProductByLicenseKey(licenseKey)
                 .stream()
                 .map(LicenseProduct::getProduct)
                 .map(ProductResponseDto::from)

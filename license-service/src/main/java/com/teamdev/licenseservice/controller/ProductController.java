@@ -1,6 +1,5 @@
 package com.teamdev.licenseservice.controller;
 
-import com.teamdev.licenseservice.dto.LicenseDto;
 import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductResponseDto;
 import com.teamdev.licenseservice.service.ProductService;
@@ -34,8 +33,8 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/license")
-    public List<ProductResponseDto> getProductsByLicenseKey(@Valid @RequestBody LicenseDto licenseDto) {
-        return productService.getProductsByLicenseKey(licenseDto);
+    @GetMapping("/license/{licenseKey}")
+    public List<ProductResponseDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
+        return productService.getProductsByLicenseKey(licenseKey);
     }
 }
