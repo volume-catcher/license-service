@@ -50,9 +50,6 @@ public class LicenseProductService {
 
     @Transactional
     public LicenseProductDto updateLicenseProductIsActivated(LicenseProductIsActivatedDto licenseProductIsActivatedDto) {
-        Product product = productService.getProductByName(ProductDto.builder().name(licenseProductIsActivatedDto.getProductName()).build());
-        License license = licenseService.getLicenseByKey(LicenseDto.builder().licenseKey(licenseProductIsActivatedDto.getLicenseKey()).build());
-
         LicenseProduct licenseProduct = licenseProductRepository
                 .findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductIsActivatedDto.getLicenseKey(), licenseProductIsActivatedDto.getProductName());
         if (licenseProduct == null) {
