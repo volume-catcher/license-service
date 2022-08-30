@@ -1,113 +1,138 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import LicenseList from 'components/LicenseList';
+import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import LicenseList from "components/LicenseList";
+import { isNotEmptyString, isNotEmptyArray } from "utils/utils";
+import { useAxios } from "utils/api";
 
 const theme = createTheme({
-	palette: {
-		neutral: {
-		  main: '#E0E0E0',
-		  contrastText: '#fff',
-		}
-	}
+  palette: {
+    neutral: {
+      main: "#E0E0E0",
+      contrastText: "#fff",
+    },
+  },
 });
 
-const License = (props) => {
-	const handleSubmit = (event) => {
-		// axios 통신
-	};
-	
-	const checkMsg = useState("생성되었습니다");
+const License = () => {
+  const [checkMsg, setCheckMsg] = useState("");
+  const [createdLicenseKey, setCreatedLicenseKey] = useState("");
+  const [rows, setRows] = useState([]);
+  const axios = useAxios();
+  const columns = ["순번", "라이선스 키"];
 
-	const columns = ["순번", "라이선스 키"];
-	
-	const rows = [
-	{ id: 1, name: 'PowerPoint' },
-	{ id: 2, name: 'Word' },
-	{ id: 3, name: 'Excel' },
-	{ id: 4, name: 'OneNote' },
-	{ id: 5, name: 'OneDrive' },
-	{ id: 6, name: 'Access' },
-	{ id: 7, name: 'Publisher' },
-	{ id: 8, name: 'Teams' },
-	{ id: 9, name: 'Outlook' },
-	{ id: 10, name: 'PowerPoint2' },
-	{ id: 11, name: 'Word2' },
-	{ id: 12, name: 'Excel2' },
-	{ id: 13, name: 'OneNote2' },
-	{ id: 14, name: 'OneDrive2' },
-	{ id: 15, name: 'Access2' },
-	{ id: 16, name: 'Publisher2' },
-	{ id: 17, name: 'Teams2' },
-	{ id: 18, name: 'Outlook2' },
-	{ id: 19, name: 'PowerPoint3' },
-	{ id: 20, name: 'Word3' },
-	{ id: 21, name: 'Excel3' },
-	{ id: 22, name: 'OneNote3' },
-	{ id: 23, name: 'OneDrive3' },
-	{ id: 24, name: 'Access3' },
-	{ id: 25, name: 'Publisher3' },
-	{ id: 26, name: 'Teams3' },
-	{ id: 27, name: 'Outlook3' },
-	];
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    createLicense();
+  };
 
-    return (
-		<ThemeProvider theme={theme}>
-		<Box sx={{ marginTop: 8 }}>
-		<CssBaseline />
-		<Grid container spacing={{ xs: 6, md: 0 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+  const createLicense = () => {
+    axios
+      .post("/license")
+      .then((res) => {
+        const { data } = res;
+        setCreatedLicenseKey(data.key);
+        setCheckMsg("생성되었습니다");
+        getRows();
+      })
+      .catch(() => {
+        setCheckMsg("오류가 발생했습니다");
+      });
+  };
 
-		<Grid item xs={4} sm={8} md={6}>
-		<Container maxWidth="xs">
-			<Typography component="h1" variant="h5">
-				라이선스 발급하기
-			</Typography>
-			<Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-				<Button
-					type="submit"
-					fullWidth
-					variant="contained"
-					sx={{ mt: 3, padding: 2, fontSize: 18 }}
-				>
-				라이선스 키 발급
-				</Button>
-			</Box>
-			<Box sx={{ 
-				backgroundColor: 'neutral.main', 
-				mt: 5,
-				padding: 1,
-				display:'flex',
-				alignItems:'center',
-				justifyContent:'center'
-			}}>
-				UEOI-39NG-WKF2-SKE9
-			</Box>
-			<Box sx={{ margin: 1 }}>
-				{/* TODO: checkId 로직 짜기(API, Client 둘 다) */}
-				{checkMsg}
-			</Box>
-		</Container>
-		</Grid>
+  const getRows = () => {
+    axios.get("/license").then((res) => {
+      const { data } = res;
+      setRows(
+        data.map((item, index) => ({
+          id: index,
+          name: item.key,
+        }))
+      );
+      console.log(rows);
+    });
+  };
 
-		<Grid item xs={4} sm={8} md={6}>
-		<Container maxWidth="sm">
-		<Typography component="h1" variant="h5">
-			전체 라이선스 목록
-		</Typography>
-		<Box sx={{ mt: 3 }}>
-			<LicenseList rows={rows} columns={columns} searchPlaceHolder="라이선스 키 검색"/>
-		</Box>
-		</Container>
-		</Grid>
-		</Grid>
-		</Box>
-		</ThemeProvider>
-    );
-}
+  useEffect(() => {
+    getRows();
+  }, []);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Box sx={{ marginTop: 8 }}>
+        <CssBaseline />
+        <Grid
+          container
+          spacing={{ xs: 6, md: 0 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          <Grid item xs={4} sm={8} md={6}>
+            <Container maxWidth="xs">
+              <Typography component="h1" variant="h5">
+                라이선스 발급하기
+              </Typography>
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ mt: 1 }}
+              >
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, padding: 2, fontSize: 18 }}
+                >
+                  라이선스 키 발급
+                </Button>
+              </Box>
+              {isNotEmptyString(createdLicenseKey) && (
+                <Box
+                  sx={{
+                    backgroundColor: "neutral.main",
+                    mt: 5,
+                    padding: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {createdLicenseKey}
+                </Box>
+              )}
+              <Box sx={{ margin: 1 }}>{checkMsg}</Box>
+            </Container>
+          </Grid>
+
+          <Grid item xs={4} sm={8} md={6}>
+            <Container maxWidth="sm">
+              <Typography component="h1" variant="h5">
+                전체 라이선스 목록
+              </Typography>
+              <Box sx={{ mt: 3 }}>
+                {isNotEmptyArray(rows) ? (
+                  <LicenseList
+                    rows={rows}
+                    columns={columns}
+                    searchPlaceHolder="라이선스 키 검색"
+                  />
+                ) : (
+                  <Typography component="h1" variant="subtitle1">
+                    라이선스를 불러올 수 없습니다
+                  </Typography>
+                )}
+              </Box>
+            </Container>
+          </Grid>
+        </Grid>
+      </Box>
+    </ThemeProvider>
+  );
+};
 
 export default License;

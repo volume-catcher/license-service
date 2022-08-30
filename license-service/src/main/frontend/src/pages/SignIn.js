@@ -13,6 +13,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import StyledLink from 'components/StyledLink';
+import { useSetRecoilState } from 'recoil';
+import { userState } from 'state/atom';
+import { useAxios } from 'utils/api';
+import { useNavigate } from 'react-router-dom';
+
 
 function Copyright(props) {
   return (
@@ -30,13 +35,29 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const setUser = useSetRecoilState(userState);
+  const axios = useAxios();
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const formData = new FormData(event.currentTarget);
+    const data = {
+      id: formData.get('id'),
+      password: formData.get('password'),
+    }
+    
+    axios.post('/signin', data)
+    .then(res => {
+      const { token } = res.data;
+      setUser({ 
+        accessToken: token,
+        id: data.id,
+        isLogin: true
+      });
+      navigate('/');
+    })
+    
   };
 
   return (
@@ -62,10 +83,10 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="id"
               label="아이디"
-              name="email"
-              autoComplete="username"
+              name="id"
+              autoComplete="id"
               autoFocus
             />
             <TextField

@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
-import { Modal } from '@mui/material';
-import Box from '@mui/material/Box';
-import LicenseDetail from './LicenseDetail';
-import Backdrop from '@mui/material/Backdrop';
+import React, { useState } from "react";
+import { Modal } from "@mui/material";
+import Box from "@mui/material/Box";
+import LicenseDetail from "./LicenseDetail";
 
-const LicenseModal = ({ openModal, setOpenModal }) => {
+const LicenseModal = ({ openModal, handleCloseModal, license }) => {
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     height: 600,
-    maxHeight: '90%',
+    maxHeight: "90%",
     width: 600,
-    maxWidth: '90%',
-    overflowY: 'scroll',
-    bgcolor: 'background.paper',
+    maxWidth: "90%",
+    overflowY: "scroll",
+    bgcolor: "background.paper",
     boxShadow: 12,
     p: 4,
   };
@@ -23,16 +22,18 @@ const LicenseModal = ({ openModal, setOpenModal }) => {
   return (
     <Modal
       open={openModal}
-      onClose={() => setOpenModal(false)}
+      onClose={handleCloseModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      componentsProps={{backdrop: {style: {backgroundColor: 'rgba(0,0,0,0.1)'}}}}
+      componentsProps={{
+        backdrop: { style: { backgroundColor: "rgba(0,0,0,0.1)" } },
+      }}
     >
       <Box sx={style}>
-        <LicenseDetail />
+        <LicenseDetail license={license} />
       </Box>
     </Modal>
-  )
-}
+  );
+};
 
 export default LicenseModal;
