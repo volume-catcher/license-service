@@ -10,28 +10,30 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-public class ProductDto {
-
-    @NotNull
-    private String id;
+public class ProductNameDto {
 
     @NotNull
     @Size(min = 3, max = 45)
     protected String name;
 
     @Builder
-    public ProductDto(String name, String id) {
+    public ProductNameDto(String name) {
         this.name = name;
-        this.id = id;
     }
 
-    public static ProductDto from(Product product) {
+    public static ProductNameDto from(Product product) {
         if (product == null) return null;
 
-        return ProductDto.builder()
-                .id(product.getAccount().getId())
+        return ProductNameDto.builder()
                 .name(product.getName())
                 .build();
     }
-}
 
+    public static ProductNameDto fromProductDto(ProductDto productDto) {
+        if (productDto == null) return null;
+
+        return ProductNameDto.builder()
+                .name(productDto.getName())
+                .build();
+    }
+}

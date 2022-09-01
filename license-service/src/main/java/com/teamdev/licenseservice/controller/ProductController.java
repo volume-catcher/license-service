@@ -1,7 +1,6 @@
 package com.teamdev.licenseservice.controller;
 
-import com.teamdev.licenseservice.dto.ProductDto;
-import com.teamdev.licenseservice.dto.ProductResponseDto;
+import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,22 +18,22 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ProductResponseDto createProduct(@Valid @RequestBody ProductDto productDto) {
-        return productService.createProduct(productDto);
+    public ProductNameDto createProduct(@Valid @RequestBody ProductNameDto productNameDto) {
+        return productService.createProduct(productNameDto);
     }
 
     @GetMapping("/{id}")
-    public List<ProductResponseDto> getProductsCreatedById(@PathVariable String id) {
+    public List<ProductNameDto> getProductsCreatedById(@PathVariable String id) {
         return productService.getProductsCreatedById(id);
     }
 
     @GetMapping
-    public List<ProductResponseDto> getAllProducts() {
+    public List<ProductNameDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/license/{licenseKey}")
-    public List<ProductResponseDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
+    public List<ProductNameDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
         return productService.getProductsByLicenseKey(licenseKey);
     }
 }
