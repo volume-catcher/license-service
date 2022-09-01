@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { styled, alpha, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -161,6 +161,7 @@ const LicenseList = (props) => {
 
   useEffect(() => {
     let rowClone = [...rows];
+    setPage(0);
     setFilteredRows(
       rowClone.filter(
         (row) =>
@@ -198,8 +199,8 @@ const LicenseList = (props) => {
         <Table aria-label="custom pagination table">
           <TableHead>
             <TableRow>
-              {columns.map((col) => (
-                <TableCell>{col}</TableCell>
+              {columns.map((col, index) => (
+                <TableCell key={index}>{col}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -210,8 +211,8 @@ const LicenseList = (props) => {
                   ? [page * rowsPerPage, page * rowsPerPage + rowsPerPage]
                   : [])
               )
-              .map((item) => (
-                <>
+              .map((item, index) => (
+                <Fragment key={index}>
                   <TableRow
                     key={item.id}
                     hover
@@ -222,7 +223,7 @@ const LicenseList = (props) => {
                     </TableCell>
                     <TableCell>{item.name}</TableCell>
                   </TableRow>
-                </>
+                </Fragment>
               ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>

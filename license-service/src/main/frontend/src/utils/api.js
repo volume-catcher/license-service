@@ -1,29 +1,30 @@
-import axios from 'axios';
-import { useRecoilState } from 'recoil';
-import { userState } from 'state/atom';
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { userState } from "state/atom";
 
 export const useAxios = () => {
   const [user, setUser] = useRecoilState(userState);
 
   return {
-    get: request('GET'),
-    post: request('POST'),
-    put: request('PUT'),
-    delete: request('DELETE')
+    get: request("GET"),
+    post: request("POST"),
+    put: request("PUT"),
+    patch: request("PATCH"),
+    delete: request("DELETE"),
   };
 
   function request(method) {
     return (url, data) => {
       const requestOptions = {
         method,
-        headers: authHeader(url)
+        headers: authHeader(url),
       };
       if (data) {
-        requestOptions.headers['Content-Type'] = 'application/json';
+        requestOptions.headers["Content-Type"] = "application/json";
         requestOptions.data = JSON.stringify(data);
       }
       return axios(url, requestOptions).then();
-    }
+    };
   }
 
   function authHeader(url) {
@@ -37,5 +38,4 @@ export const useAxios = () => {
       return {};
     }
   }
-
-}
+};

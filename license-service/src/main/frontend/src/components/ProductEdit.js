@@ -5,19 +5,21 @@ import TextField from "@mui/material/TextField";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { isPositiveOrZeroNumber } from "utils/utils";
 
 const ProductEdit = (props) => {
-  const [numOfAuthAvailable, setNumOfAuthAvailable] = useState(
-    props.product.numOfAuthAvailable
-  );
-  const [isActivated, setIsActivated] = useState(props.product.isActivated);
-  const [expireAt, setExpireAt] = useState(props.product.expireAt);
+  const { numOfAuthAvailable, setNumOfAuthAvailable } = props;
+  const { isActivated, setIsActivated } = props;
+  const { expireAt, setExpireAt } = props;
 
-  useEffect(() => {
-    if (!props.update) {
-      console.log("update is false");
+  const handleNumOfAuthAvailableChange = (e) => {
+    const value = e.target.value;
+    if (isPositiveOrZeroNumber(value)) {
+      setNumOfAuthAvailable(value);
+    } else {
+      setNumOfAuthAvailable(0);
     }
-  }, [props.update]);
+  };
 
   return (
     <>
@@ -35,7 +37,7 @@ const ProductEdit = (props) => {
         InputProps={{
           inputProps: { min: 0 },
         }}
-        onChange={(e) => setNumOfAuthAvailable(e.target.value)}
+        onChange={handleNumOfAuthAvailableChange}
         autoFocus
       />
       <Typography sx={{ color: "#6E6E6E", fontSize: 14, marginTop: 2 }}>
@@ -55,7 +57,9 @@ const ProductEdit = (props) => {
         <DateTimePicker
           value={expireAt}
           onChange={(e) => setExpireAt(e)}
-          disablePast={true}
+          inputFormat={"YYYY-MM-DD HH:mm"}
+          disablePast
+          inputProps={{ readOnly: true }}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -22,14 +22,13 @@ const Product = () => {
     { field: "name", headerName: "제품명", width: 130 },
   ];
 
-  const getRows = () => {
+  const getRows = useCallback(() => {
     axios.get("/product").then((res) => {
       const { data } = res;
       data.forEach((item, index) => (item.id = index + 1));
-      console.log(data);
       setRows(data);
     });
-  };
+  });
 
   const createProduct = (productName) => {
     axios
@@ -58,6 +57,7 @@ const Product = () => {
     } else {
       setCheckMsg("제품명을 입력하세요");
     }
+    event.target.reset();
   };
 
   useEffect(() => {
@@ -118,6 +118,7 @@ const Product = () => {
                     columns={columns}
                     pageSize={5}
                     autoHeight
+                    rowsPerPageOptions={[5]}
                   />
                 ) : (
                   <Typography component="h1" variant="subtitle1">

@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import ProductList from "components/ProductList";
+import ProductRegisteredWithLicense from "components/ProductRegisteredWithLicense";
 
 const LicenseDetail = ({ license }) => {
   return (
@@ -11,7 +11,7 @@ const LicenseDetail = ({ license }) => {
       <Typography variant="h6" gutterBottom component="div">
         {license}
       </Typography>
-      <ProductList license={license} />
+      <ProductRegisteredWithLicense license={license} />
     </>
   );
 };

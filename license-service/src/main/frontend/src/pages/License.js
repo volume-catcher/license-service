@@ -54,7 +54,6 @@ const License = () => {
           name: item.key,
         }))
       );
-      console.log(rows);
     });
   };
 
