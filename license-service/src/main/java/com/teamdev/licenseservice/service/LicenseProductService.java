@@ -27,7 +27,7 @@ public class LicenseProductService {
     @Transactional
     public LicenseProductDto createLicenseProduct(LicenseProductDto licenseProductDto) {
         Product product = productService.getProductByName(ProductNameDto.builder().name(licenseProductDto.getProductName()).build());
-        License license = licenseService.getLicenseByKey(LicenseDto.builder().licenseKey(licenseProductDto.getLicenseKey()).build());
+        License license = licenseService.getLicenseByKey(LicenseKeyDto.builder().key(licenseProductDto.getLicenseKey()).build());
 
         LicenseProduct preLicenseProduct = licenseProductRepository
                 .findOneLicenseProductByLicenseKeyAndProductNameQ(licenseProductDto.getLicenseKey(), licenseProductDto.getProductName());

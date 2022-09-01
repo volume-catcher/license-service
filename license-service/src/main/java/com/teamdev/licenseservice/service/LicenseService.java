@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.service;
 
+import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseDto;
-import com.teamdev.licenseservice.dto.LicenseResponseDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.License;
 import com.teamdev.licenseservice.exception.ErrorMessage;
@@ -28,7 +28,7 @@ public class LicenseService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public LicenseResponseDto createLicense() {
+    public LicenseKeyDto createLicense() {
         String licenseKey = SerialNumber.getSerialNumber();
         String id = SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
 
@@ -36,45 +36,45 @@ public class LicenseService {
             licenseKey = SerialNumber.getSerialNumber();
         }
 
-        LicenseResponseDto licenseResponseDto = LicenseResponseDto.builder()
+        LicenseDto licenseDto = LicenseDto.builder()
                 .key(licenseKey)
                 .accountId(id)
                 .build();
         
-        saveLicenseWithValidAccount(licenseResponseDto);
+        saveLicenseWithValidAccount(licenseDto);
 
-        return licenseResponseDto;
+        return LicenseKeyDto.fromLicenseDto(licenseDto);
     }
 
-    public List<LicenseResponseDto> getLicenseCreatedById(String id) {
+    public List<LicenseKeyDto> getLicenseCreatedById(String id) {
         if (!SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)).equals(id)) {
             throw new ForbiddenException(ErrorMessage.FORBIDDEN);
         }
-        return licenseRepository.findAllByAccountId(id).stream().map(LicenseResponseDto::from).collect(Collectors.toList());
+        return licenseRepository.findAllByAccountId(id).stream().map(LicenseKeyDto::from).collect(Collectors.toList());
     }
 
-    public List<LicenseResponseDto> getAllLicenses() {
-        return licenseRepository.findAll().stream().map(LicenseResponseDto::from).collect(Collectors.toList());
+    public List<LicenseKeyDto> getAllLicenses() {
+        return licenseRepository.findAll().stream().map(LicenseKeyDto::from).collect(Collectors.toList());
     }
 
     @Transactional
-    public License saveLicenseWithValidAccount(LicenseResponseDto licenseResponseDto) {
-        Optional<Account> account = accountRepository.findById(licenseResponseDto.getAccountId());
+    public License saveLicenseWithValidAccount(LicenseDto licenseDto) {
+        Optional<Account> account = accountRepository.findById(licenseDto.getAccountId());
 
         if (account.isEmpty()) {
             throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND);
         }
 
         License license = License.builder()
-                .key(licenseResponseDto.getKey())
+                .key(licenseDto.getKey())
                 .account(account.get())
                 .build();
 
         return licenseRepository.save(license);
     }
 
-    public License getLicenseByKey(LicenseDto licenseDto) {
-        Optional<License> license = licenseRepository.findByKey(licenseDto.getLicenseKey());
+    public License getLicenseByKey(LicenseKeyDto licenseKeyDto) {
+        Optional<License> license = licenseRepository.findByKey(licenseKeyDto.getKey());
 
         if (license.isEmpty()) {
             throw new NotFoundException(ErrorMessage.LICENSE_NOT_FOUND);

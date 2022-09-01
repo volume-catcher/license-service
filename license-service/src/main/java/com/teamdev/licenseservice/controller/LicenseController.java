@@ -1,6 +1,6 @@
 package com.teamdev.licenseservice.controller;
 
-import com.teamdev.licenseservice.dto.LicenseResponseDto;
+import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.service.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,17 +17,17 @@ public class LicenseController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public LicenseResponseDto createLicense() {
+    public LicenseKeyDto createLicense() {
         return licenseService.createLicense();
     }
 
     @GetMapping("/{id}")
-    public List<LicenseResponseDto> getLicenseCreatedById(@PathVariable String id) {
+    public List<LicenseKeyDto> getLicenseCreatedById(@PathVariable String id) {
         return licenseService.getLicenseCreatedById(id);
     }
 
     @GetMapping
-    public List<LicenseResponseDto> getAllLicenses() {
+    public List<LicenseKeyDto> getAllLicenses() {
         return licenseService.getAllLicenses();
     }
 }

@@ -10,28 +10,30 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-public class LicenseResponseDto {
+public class LicenseKeyDto {
 
     @NotNull
     @Size(min = 19, max = 19)
     private String key;
 
-    @NotNull
-    @Size(min = 3, max = 20)
-    private String accountId;
-
     @Builder
-    public LicenseResponseDto(String key, String accountId) {
+    public LicenseKeyDto(String key) {
         this.key = key;
-        this.accountId = accountId;
     }
 
-    public static LicenseResponseDto from(License license) {
+    public static LicenseKeyDto from(License license) {
         if (license == null) return null;
 
-        return LicenseResponseDto.builder()
+        return LicenseKeyDto.builder()
                 .key(license.getKey())
-                .accountId(license.getAccount().getId())
+                .build();
+    }
+
+    public static LicenseKeyDto fromLicenseDto(LicenseDto licenseDto) {
+        if (licenseDto == null) return null;
+
+        return LicenseKeyDto.builder()
+                .key(licenseDto.getKey())
                 .build();
     }
 }
