@@ -1,5 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.teamdev.licenseservice.entity.LicenseProduct;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class LicenseProductDto {
 
     @NotNull
     @Future
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime expireAt;
 
     @Builder
