@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import ProductRegisteredWithLicense from "components/ProductRegisteredWithLicense";
+import ProductRegisteredWithLicense from "views/ProductRegisteredWithLicense";
 
 const LicenseDetail = ({ license }) => {
   return (

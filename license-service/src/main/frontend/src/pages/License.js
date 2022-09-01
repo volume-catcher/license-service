@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import LicenseList from "components/LicenseList";
+import LicenseList from "views/LicenseList";
 import { isNotEmptyString, isNotEmptyArray } from "utils/utils";
 import { useAxios } from "utils/api";
 
