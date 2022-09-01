@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -32,6 +32,12 @@ const ProductEdit = (props) => {
         InputLabelProps={{
           shrink: true,
         }}
+        sx={{
+          width: { sm: 300, xs: 220 },
+          "& .MuiInputBase-root": {
+            height: 40,
+          },
+        }}
         variant="outlined"
         value={numOfAuthAvailable}
         InputProps={{
@@ -47,6 +53,12 @@ const ProductEdit = (props) => {
         variant="contained"
         color="info"
         onClick={() => setIsActivated(!isActivated)}
+        sx={{
+          width: { sm: 300, xs: 220 },
+          "& .MuiInputBase-root": {
+            height: 40,
+          },
+        }}
       >
         {isActivated ? "활성화" : "비활성화"}
       </Button>
@@ -60,7 +72,17 @@ const ProductEdit = (props) => {
           inputFormat={"YYYY-MM-DD HH:mm"}
           disablePast
           inputProps={{ readOnly: true }}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              sx={{
+                width: { sm: 300, xs: 220 },
+                "& .MuiInputBase-root": {
+                  height: 40,
+                },
+              }}
+            />
+          )}
         />
       </LocalizationProvider>
     </>

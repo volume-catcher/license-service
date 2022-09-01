@@ -127,8 +127,26 @@ const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
               onChange={(event, value) => setProductName(value)}
               fullWidth
               options={options}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="제품" />}
+              sx={{
+                width: "100%",
+                "& .MuiInputBase-root": {
+                  height: 60,
+                },
+                background: "#F6F6F6",
+                "&:hover": {
+                  background: "#E9E9E9",
+                },
+                outline: "none",
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="제품"
+                  required
+                  sx={{ "& fieldset": { border: "none" } }}
+                />
+              )}
             />
             <ProductEdit
               update={openPanel}
