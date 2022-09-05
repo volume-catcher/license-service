@@ -20,7 +20,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { TextField } from "@mui/material";
 import LicenseModal from "./LicenseModal";
 import { isNotEmptyString } from "utils/utils";
-import { useAxios } from "utils/api";
 
 const TablePaginationActions = (props) => {
   const theme = useTheme();
@@ -133,7 +132,6 @@ const LicenseList = (props) => {
   const [searchWord, setSearchWord] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState();
-  const axios = useAxios();
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =

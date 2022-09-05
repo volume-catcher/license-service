@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,6 +10,8 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { Link } from "react-router-dom";
 
 const pages = [
@@ -18,7 +20,7 @@ const pages = [
 ];
 
 const ResponsiveAppBar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -27,6 +29,12 @@ const ResponsiveAppBar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    setIsLogin(!!localStorage.getItem("token"));
+  }, []);
 
   return (
     <AppBar position="static">
@@ -117,11 +125,28 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open Sign-in">
-              <IconButton sx={{ p: 0 }} component={Link} to="/signin">
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+            {isLogin ? (
+              <Tooltip title="Sign-out">
+                <IconButton
+                  component={Link}
+                  to="/signin"
+                  sx={{ p: 0 }}
+                  onClick={() => localStorage.removeItem("token")}
+                >
+                  <Avatar>
+                    <LockOpenIcon />
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Open Sign-in">
+                <IconButton sx={{ p: 0 }} component={Link} to="/signin">
+                  <Avatar>
+                    <LockIcon />
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
         </Toolbar>
       </Container>

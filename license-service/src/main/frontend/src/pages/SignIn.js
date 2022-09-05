@@ -9,8 +9,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StyledLink from "views/StyledLink";
-import { useSetRecoilState } from "recoil";
-import { userState } from "state/atom";
 import { useAxios } from "utils/api";
 import { useNavigate } from "react-router-dom";
 import Copyright from "views/CopyRight";
@@ -18,7 +16,6 @@ import Copyright from "views/CopyRight";
 const theme = createTheme();
 
 export default function SignIn() {
-  const setUser = useSetRecoilState(userState);
   const axios = useAxios();
   const navigate = useNavigate();
 
@@ -32,11 +29,7 @@ export default function SignIn() {
 
     axios.post("/signin", data).then((res) => {
       const { token } = res.data;
-      setUser({
-        accessToken: token,
-        id: data.id,
-        isLogin: true,
-      });
+      localStorage.setItem("token", token);
       navigate("/");
     });
   };
