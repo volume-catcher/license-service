@@ -6,40 +6,75 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import ProductEdit from "./ProductEdit";
-import { useAxios } from "utils/api";
+import Snackbar from "@mui/material/Snackbar";
+import { useTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
-import { Snackbar } from "@mui/material";
+import ProductEdit from "views/ProductEdit";
+import { instance } from "utils/apiInstance";
+import { isNotEmptyArray } from "utils/utils";
 
-const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
+const ProductHeader = ({ licenseKey, updateData, productsByLicense }) => {
+  const theme = useTheme();
   const defaultValue = {
     productName: "",
     numOfAuthAvailable: 5,
     isActivated: true,
     expireAt: dayjs(Date.now() + 7 * 24 * 60 * 60 * 1000),
   };
-  const axios = useAxios();
 
   const [openPanel, setOpenPanel] = useState(false);
-  const [productName, setProductName] = useState(defaultValue.productName);
-  const [numOfAuthAvailable, setNumOfAuthAvailable] = useState(
-    defaultValue.numOfAuthAvailable
-  );
-  const [isActivated, setIsActivated] = useState(defaultValue.isActivated);
-  const [expireAt, setExpireAt] = useState(defaultValue.expireAt);
+  const [productName, setProductName] = useState("");
+  const [numOfAuthAvailable, setNumOfAuthAvailable] = useState();
+  const [isActivated, setIsActivated] = useState();
+  const [expireAt, setExpireAt] = useState();
   const [checkMsg, setCheckMsg] = useState("");
   const [openMsg, setOpenMsg] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    getAllProducts();
+  }, []);
 
   useEffect(() => {
     if (openPanel) {
       clearData();
+      filterOptions();
     } else {
       setCheckMsg("");
     }
   }, [openPanel]);
 
+  const clearData = () => {
+    setProductName(defaultValue.productName);
+    setNumOfAuthAvailable(defaultValue.numOfAuthAvailable);
+    setIsActivated(defaultValue.isActivated);
+    setExpireAt(defaultValue.expireAt);
+  };
+
+  const getAllProducts = () => {
+    instance
+      .get("/product")
+      .then(({ data }) => {
+        if (isNotEmptyArray(data)) {
+          setProducts(data.flatMap((item) => item.name));
+        }
+      })
+      .then(() => {
+        filterOptions();
+      });
+  };
+
+  const filterOptions = () => {
+    setOptions(products.filter((item) => !productsByLicense.includes(item)));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    grantLicenseToProduct();
+  };
+
+  const grantLicenseToProduct = () => {
     const data = {
       licenseKey: licenseKey,
       productName: productName,
@@ -47,7 +82,7 @@ const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
       numOfAuthAvailable: numOfAuthAvailable,
       expireAt: dayjs(expireAt).format("YYYY-MM-DDTHH:mm:ss"),
     };
-    axios
+    instance
       .post("/license-product", data)
       .then(() => {
         setCheckMsg("생성되었습니다");
@@ -68,13 +103,6 @@ const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
       });
   };
 
-  const clearData = () => {
-    setProductName(defaultValue.productName);
-    setNumOfAuthAvailable(defaultValue.numOfAuthAvailable);
-    setIsActivated(defaultValue.isActivated);
-    setExpireAt(defaultValue.expireAt);
-  };
-
   return (
     <>
       <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -84,16 +112,9 @@ const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="flex-start"
-            alignItems="center"
-          >
-            <Typography variant="h6" gutterBottom component="div">
-              제품
-            </Typography>
-          </Stack>
+          <Typography variant="h6" gutterBottom component="div">
+            제품
+          </Typography>
           <Stack
             direction="row"
             spacing={2}
@@ -132,9 +153,9 @@ const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
                 "& .MuiInputBase-root": {
                   height: 60,
                 },
-                background: "#F6F6F6",
+                background: theme.palette.grey[100],
                 "&:hover": {
-                  background: "#E9E9E9",
+                  background: theme.palette.grey[200],
                 },
                 outline: "none",
               }}
@@ -171,4 +192,4 @@ const CreateLicenseProduct = ({ licenseKey, updateData, options }) => {
   );
 };
 
-export default CreateLicenseProduct;
+export default ProductHeader;

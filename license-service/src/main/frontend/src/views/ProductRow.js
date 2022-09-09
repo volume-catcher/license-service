@@ -8,16 +8,17 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { styled, createTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Snackbar from "@mui/material/Snackbar";
-import ProductEdit from "./ProductEdit";
-import ProductDetail from "./ProductDetail";
 import dayjs from "dayjs";
-import { useAxios } from "utils/api";
+import ProductEdit from "views/ProductEdit";
+import ProductDetail from "views/ProductDetail";
+import { instance } from "utils/apiInstance";
 
 export default function ProductRow({ row }) {
+  const theme = useTheme();
   const { licenseKey, productName } = row;
-  const axios = useAxios();
+
   const [openPanel, setOpenPanel] = useState(false);
   const [edit, setEdit] = useState(false);
   const [openMsg, setOpenMsg] = useState(false);
@@ -29,22 +30,21 @@ export default function ProductRow({ row }) {
   const [expireAt, setExpireAt] = useState(row.expireAt);
   const [checkMsg, setCheckMsg] = useState("");
 
-  const theme = createTheme({
-    palette: {
-      backgroundGray: "#F6F6F6",
-      hoverGray: "#E9E9E9",
-      titleGray: "#6E6E6E",
-    },
-  });
-
   const StyledTableRow = styled(TableRow)(() => ({
-    backgroundColor: theme.palette.backgroundGray,
+    backgroundColor: theme.palette.grey[100],
     "&:hover": {
-      background: theme.palette.hoverGray,
+      background: theme.palette.grey[200],
     },
+    "& > *": { borderBottom: "unset" },
   }));
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (openPanel) {
+      setCheckMsg("");
+    }
+  }, [openPanel]);
+
+  const updateProductOnLicense = () => {
     const data = {
       licenseKey: licenseKey,
       productName: productName,
@@ -52,7 +52,8 @@ export default function ProductRow({ row }) {
       numOfAuthAvailable: numOfAuthAvailable,
       expireAt: dayjs(expireAt).format("YYYY-MM-DDTHH:mm:ss"),
     };
-    axios
+
+    instance
       .put("/license-product", data)
       .then(() => {
         setEdit(false);
@@ -74,25 +75,16 @@ export default function ProductRow({ row }) {
     e.preventDefault();
     e.stopPropagation();
     if (edit) {
-      handleSubmit();
+      updateProductOnLicense();
     } else {
       setEdit(true);
       setOpenPanel(true);
     }
   };
 
-  useEffect(() => {
-    if (openPanel) {
-      setCheckMsg("");
-    }
-  }, [openPanel]);
-
   return (
     <>
-      <StyledTableRow
-        sx={{ "& > *": { borderBottom: "unset" } }}
-        onClick={() => setOpenPanel(!openPanel)}
-      >
+      <StyledTableRow onClick={() => setOpenPanel(!openPanel)}>
         <TableCell>
           <IconButton aria-label="expand row" size="small">
             {openPanel ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}

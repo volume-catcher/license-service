@@ -6,33 +6,50 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { DataGrid } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useAxios } from "utils/api";
+import { useTheme } from "@mui/material/styles";
 import { isNotEmptyArray, isNotEmptyString } from "utils/utils";
+import { instance } from "utils/apiInstance";
+import FallbackMsg from "views/FallbackMsg";
+import SearchTable from "views/SearchTable";
 
 const Product = () => {
+  const theme = useTheme();
   const [rows, setRows] = useState([]);
   const [checkMsg, setCheckMsg] = useState("");
-  const axios = useAxios();
+  const [product, setProduct] = useState("");
 
-  const theme = createTheme();
-  const columns = [
-    { field: "id", headerName: "순번", width: 70 },
-    { field: "name", headerName: "제품명", width: 130 },
-  ];
+  const columns = ["순번", "제품명"];
+
+  useEffect(() => {
+    getRows();
+  }, []);
 
   const getRows = useCallback(() => {
-    axios.get("/product").then((res) => {
-      const { data } = res;
-      data.forEach((item, index) => (item.id = index + 1));
-      setRows(data);
+    instance.get("/product").then(({ data }) => {
+      if (!!data) {
+        data.forEach((item, index) => (item.id = index));
+        setRows(data);
+      }
     });
   });
 
-  const createProduct = (productName) => {
-    axios
-      .post("/product", productName)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (isNotEmptyString(product)) {
+      createProduct();
+    } else {
+      setCheckMsg("제품명을 입력하세요");
+    }
+  };
+
+  const createProduct = useCallback(() => {
+    const data = {
+      name: product,
+    };
+
+    instance
+      .post("/product", data)
       .then(() => {
         setCheckMsg("생성되었습니다");
         getRows();
@@ -44,93 +61,78 @@ const Product = () => {
           setCheckMsg("오류가 발생했습니다");
         }
       });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const data = {
-      name: formData.get("product"),
-    };
-    if (isNotEmptyString(data.name)) {
-      createProduct(data);
-    } else {
-      setCheckMsg("제품명을 입력하세요");
-    }
-    event.target.reset();
-  };
-
-  useEffect(() => {
-    getRows();
-  }, []);
+  });
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ marginTop: 8 }}>
-        <CssBaseline />
-        <Grid
-          container
-          spacing={{ xs: 6, md: 0 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
-          <Grid item xs={4} sm={8} md={6}>
-            <Container maxWidth="xs">
-              <Typography component="h1" variant="h5">
-                제품 생성하기
-              </Typography>
-              <Box
-                component="form"
-                onSubmit={handleSubmit}
-                noValidate
-                sx={{ mt: 1 }}
+    <Box sx={{ marginTop: 8 }}>
+      <CssBaseline />
+      <Grid
+        container
+        spacing={{ xs: 6, md: 0 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+      >
+        <Grid item xs={4} sm={8} md={6}>
+          <Container maxWidth="xs">
+            <Typography component="h1" variant="h5">
+              제품 생성하기
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="제품명"
+                autoFocus
+                value={product}
+                onChange={(e) => setProduct(e.target.value)}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3 }}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="product"
-                  label="제품명"
-                  name="product"
-                  autoFocus
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3 }}
-                >
-                  제품 생성
-                </Button>
-                <Box sx={{ margin: 1 }}>{checkMsg}</Box>
+                제품 생성
+              </Button>
+              <Box
+                sx={{
+                  margin: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  color: theme.palette.grey[700],
+                }}
+              >
+                {checkMsg}
               </Box>
-            </Container>
-          </Grid>
-
-          <Grid item xs={4} sm={8} md={6}>
-            <Container maxWidth="sm">
-              <Typography component="h1" variant="h5">
-                전체 제품 목록
-              </Typography>
-              <Box sx={{ mt: 3 }}>
-                {isNotEmptyArray(rows) ? (
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    pageSize={5}
-                    autoHeight
-                    rowsPerPageOptions={[5]}
-                  />
-                ) : (
-                  <Typography component="h1" variant="subtitle1">
-                    제품을 불러올 수 없습니다
-                  </Typography>
-                )}
-              </Box>
-            </Container>
-          </Grid>
+            </Box>
+          </Container>
         </Grid>
-      </Box>
-    </ThemeProvider>
+
+        <Grid item xs={4} sm={8} md={6}>
+          <Container maxWidth="sm">
+            <Typography component="h1" variant="h5">
+              전체 제품 목록
+            </Typography>
+            <Box sx={{ mt: 3 }}>
+              {isNotEmptyArray(rows) ? (
+                <SearchTable
+                  rows={rows}
+                  columns={columns}
+                  placeholder={"제품 검색"}
+                />
+              ) : (
+                <FallbackMsg text="제품을 불러올 수 없습니다" retry={getRows} />
+              )}
+            </Box>
+          </Container>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

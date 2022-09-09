@@ -1,7 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import PropTypes from "prop-types";
 import { styled, alpha, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -11,19 +9,18 @@ import TableFooter from "@mui/material/TableFooter";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import SearchIcon from "@mui/icons-material/Search";
+import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
+import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import LastPageIcon from "@mui/icons-material/LastPage";
-import SearchIcon from "@mui/icons-material/Search";
-import { TextField } from "@mui/material";
-import LicenseModal from "./LicenseModal";
+import TextField from "@mui/material/TextField";
 import { isNotEmptyString } from "utils/utils";
 
-const TablePaginationActions = (props) => {
+const TablePaginationActions = ({ count, page, rowsPerPage, onPageChange }) => {
   const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
 
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0);
@@ -108,6 +105,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(TextField)(({ theme }) => ({
   color: "inherit",
+  width: "100%",
   "& .MuiInputBase-input": {
     width: "100%",
     padding: theme.spacing(1, 1, 1, 0),
@@ -116,46 +114,15 @@ const StyledInputBase = styled(TextField)(({ theme }) => ({
   },
 }));
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-const LicenseList = (props) => {
-  const { rows, columns } = props;
+const SearchTable = ({ rows, columns, placeholder, rowOnClick }) => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [count, setCount] = useState(rows.length);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchWord, setSearchWord] = useState("");
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedLicense, setSelectedLicense] = useState();
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleOpenModal = (event, license) => {
-    setOpenModal(true);
-    console.log(`handleOpenModal`);
-    setSelectedLicense(license);
-    console.log(selectedLicense);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
 
   useEffect(() => {
     let rowClone = [...rows];
@@ -180,20 +147,28 @@ const LicenseList = (props) => {
     }
   }, [filteredRows]);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <Paper sx={{ minWidth: 500 }}>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder={props.searchPlaceHolder}
-          inputProps={{ "aria-label": "search" }}
-          onChange={(e) => setSearchWord(e.target.value)}
-        />
-      </Search>
-
       <TableContainer>
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder={placeholder}
+            inputProps={{ "aria-label": "search" }}
+            onChange={(e) => setSearchWord(e.target.value)}
+          />
+        </Search>
         <Table aria-label="custom pagination table">
           <TableHead>
             <TableRow>
@@ -214,7 +189,7 @@ const LicenseList = (props) => {
                   <TableRow
                     key={item.id}
                     hover
-                    onClick={(e) => handleOpenModal(e, item.name)}
+                    onClick={rowOnClick ? () => rowOnClick(item.name) : null}
                   >
                     <TableCell component="th" scope="row">
                       {item.id + 1}
@@ -251,13 +226,8 @@ const LicenseList = (props) => {
           </TableFooter>
         </Table>
       </TableContainer>
-      <LicenseModal
-        openModal={openModal}
-        handleCloseModal={handleCloseModal}
-        license={selectedLicense}
-      />
     </Paper>
   );
 };
 
-export default LicenseList;
+export default SearchTable;
