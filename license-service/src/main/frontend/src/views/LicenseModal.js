@@ -100,7 +100,7 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           autoHideDuration={2000}
           onClose={() => setOpenSnackbar(false)}
-          message={checkMsg}
+          message={checkMsg || ""}
         />
       </Box>
     </Modal>
