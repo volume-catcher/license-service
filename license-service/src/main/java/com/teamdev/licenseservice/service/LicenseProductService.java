@@ -88,4 +88,8 @@ public class LicenseProductService {
                 .map(LicenseProductDto::from)
                 .collect(Collectors.toList());
     }
+
+    public List<LicenseProductNumDto> getLicenseProductsNum() {
+        return licenseProductRepository.countAllLicenseProduct();
+    }
 }
