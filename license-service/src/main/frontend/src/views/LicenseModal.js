@@ -11,7 +11,12 @@ import ProductRow from "views/ProductRow";
 import { isNotEmptyArray } from "utils/utils";
 import { instance } from "utils/apiInstance";
 
-const LicenseModal = ({ openModal, handleCloseModal, license }) => {
+const LicenseModal = ({
+  openModal,
+  handleCloseModal,
+  license,
+  refreshData,
+}) => {
   const [rows, setRows] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [checkMsg, setCheckMsg] = useState("");
@@ -32,6 +37,11 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
 
   const handleOpenSnackbar = () => {
     setOpenSnackbar(true);
+  };
+
+  const refreshDataByHeader = () => {
+    refreshData();
+    getProductsByLicense();
   };
 
   const style = {
@@ -69,7 +79,7 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
 
         <ProductHeader
           licenseKey={license}
-          updateData={getProductsByLicense}
+          refreshData={refreshDataByHeader}
           productsByLicense={rows.flatMap((item) => item.productName)}
           setCheckMsg={setCheckMsg}
           openSnackbar={handleOpenSnackbar}
@@ -85,6 +95,7 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
                     row={row}
                     setCheckMsg={setCheckMsg}
                     openSnackbar={handleOpenSnackbar}
+                    refreshData={refreshData}
                   />
                 ))}
               </TableBody>

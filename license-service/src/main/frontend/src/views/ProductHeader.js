@@ -14,7 +14,7 @@ import { isNotEmptyArray } from "utils/utils";
 
 const ProductHeader = ({
   licenseKey,
-  updateData,
+  refreshData,
   productsByLicense,
   setCheckMsg,
   openSnackbar,
@@ -37,6 +37,7 @@ const ProductHeader = ({
 
   useEffect(() => {
     getAllProducts();
+    clearData();
   }, []);
 
   useEffect(() => {
@@ -90,7 +91,7 @@ const ProductHeader = ({
       .then(() => {
         setCheckMsg("생성되었습니다");
         setOpenPanel(false);
-        updateData();
+        refreshData();
       })
       .catch((error) => {
         if (error.response.status === 409) {
@@ -173,7 +174,6 @@ const ProductHeader = ({
               )}
             />
             <ProductEdit
-              update={openPanel}
               numOfAuthAvailable={numOfAuthAvailable}
               setNumOfAuthAvailable={setNumOfAuthAvailable}
               isActivated={isActivated}

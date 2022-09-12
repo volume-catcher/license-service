@@ -17,7 +17,7 @@ import { instance } from "utils/apiInstance";
 
 export default function ProductRow(props) {
   const theme = useTheme();
-  const { row, setCheckMsg, openSnackbar } = props;
+  const { row, setCheckMsg, openSnackbar, refreshData } = props;
   const { licenseKey, productName } = row;
 
   const [openPanel, setOpenPanel] = useState(false);
@@ -61,6 +61,9 @@ export default function ProductRow(props) {
       .then(() => {
         setEdit(false);
         setCheckMsg("수정되었습니다");
+      })
+      .then(() => {
+        refreshData();
       })
       .catch((error) => {
         if (error.response.status === 400) {
@@ -134,7 +137,6 @@ export default function ProductRow(props) {
             <Box sx={{ margin: 1 }}>
               {edit ? (
                 <ProductEdit
-                  update={edit}
                   numOfAuthAvailable={numOfAuthAvailable}
                   setNumOfAuthAvailable={setNumOfAuthAvailable}
                   isActivated={isActivated}

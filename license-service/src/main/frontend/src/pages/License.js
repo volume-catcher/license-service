@@ -147,6 +147,7 @@ const License = () => {
                     openModal={openModal}
                     handleCloseModal={handleCloseModal}
                     license={selectedLicense}
+                    refreshData={getRows}
                   />
                 </>
               ) : (
