@@ -12,12 +12,48 @@ import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import TextField from "@mui/material/TextField";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import TextField from "@mui/material/TextField";
 import { isNotEmptyString } from "utils/utils";
+import { visuallyHidden } from "@mui/utils";
+
+function EnhancedTableHead(props) {
+  const { headCells, order, orderBy, onRequestSort } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+
+  return (
+    <TableHead>
+      <TableRow>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ width: `${headCell.width}` }}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : "asc"}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <Box component="span" sx={visuallyHidden}>
+                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                </Box>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
 
 const TablePaginationActions = ({ count, page, rowsPerPage, onPageChange }) => {
   const theme = useTheme();
@@ -114,12 +150,15 @@ const StyledInputBase = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const SearchTable = ({ rows, columns, placeholder, rowOnClick }) => {
+const SearchTable = (props) => {
+  const { rows, columns, placeholder, rowOnClick, sortable = false } = props;
   const [filteredRows, setFilteredRows] = useState([]);
   const [count, setCount] = useState(rows.length);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchWord, setSearchWord] = useState("");
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("id");
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -156,8 +195,30 @@ const SearchTable = ({ rows, columns, placeholder, rowOnClick }) => {
     setPage(0);
   };
 
+  function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function getComparator(order, orderBy) {
+    return order === "desc"
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
   return (
-    <Paper sx={{ minWidth: 500 }}>
+    <Paper>
       <TableContainer>
         <Search>
           <SearchIconWrapper>
@@ -170,15 +231,27 @@ const SearchTable = ({ rows, columns, placeholder, rowOnClick }) => {
           />
         </Search>
         <Table aria-label="custom pagination table">
-          <TableHead>
-            <TableRow>
-              {columns.map((col, index) => (
-                <TableCell key={index}>{col}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+          {sortable ? (
+            <EnhancedTableHead
+              headCells={columns}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
+          ) : (
+            <TableHead>
+              <TableRow>
+                {columns.map((col) => (
+                  <TableCell key={col.id} sx={{ width: `${col.width}` }}>
+                    {col.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+          )}
           <TableBody>
             {filteredRows
+              .sort(getComparator(order, orderBy))
               .slice(
                 ...(rowsPerPage > 0
                   ? [page * rowsPerPage, page * rowsPerPage + rowsPerPage]
@@ -191,10 +264,9 @@ const SearchTable = ({ rows, columns, placeholder, rowOnClick }) => {
                     hover
                     onClick={rowOnClick ? () => rowOnClick(item.name) : null}
                   >
-                    <TableCell component="th" scope="row">
-                      {item.id + 1}
-                    </TableCell>
-                    <TableCell>{item.name}</TableCell>
+                    {Object.entries(item).map((entry) => (
+                      <TableCell key={entry[0]}>{entry[1]}</TableCell>
+                    ))}
                   </TableRow>
                 </Fragment>
               ))}
@@ -204,28 +276,25 @@ const SearchTable = ({ rows, columns, placeholder, rowOnClick }) => {
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                colSpan={3}
-                count={count}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: {
-                    "aria-label": "rows per page",
-                  },
-                  native: true,
-                }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+        component="div"
+        colSpan={3}
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        SelectProps={{
+          inputProps: {
+            "aria-label": "rows per page",
+          },
+          native: true,
+        }}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        ActionsComponent={TablePaginationActions}
+      />
     </Paper>
   );
 };

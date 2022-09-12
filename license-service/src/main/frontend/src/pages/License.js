@@ -20,19 +20,26 @@ const License = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState();
 
-  const columns = ["순번", "라이선스 키"];
+  const columns = [
+    { id: "id", label: "순번", width: "16%" },
+    { id: "name", label: "라이선스 키", width: "38%" },
+    { id: "totalProductNum", label: "등록 제품", width: "23%" },
+    { id: "expiredProductNum", label: "만료 제품", width: "23%" },
+  ];
 
   useEffect(() => {
     getRows();
   }, []);
 
   const getRows = useCallback(() => {
-    instance.get("/license").then((res) => {
+    instance.get("/license-product/num").then((res) => {
       const { data } = res;
       setRows(
         data.map((item, index) => ({
-          id: index,
+          id: index + 1,
           name: item.key,
+          totalProductNum: item.totalProductNum,
+          expiredProductNum: item.expiredProductNum,
         }))
       );
     });
@@ -122,7 +129,7 @@ const License = () => {
         </Grid>
 
         <Grid item xs={4} sm={8} md={6}>
-          <Container maxWidth="sm">
+          <Container maxWidth="md">
             <Typography component="h1" variant="h5">
               전체 라이선스 목록
             </Typography>
@@ -134,6 +141,7 @@ const License = () => {
                     columns={columns}
                     placeholder={"라이선스 키 검색"}
                     rowOnClick={handleOpenModal}
+                    sortable
                   />
                   <LicenseModal
                     openModal={openModal}

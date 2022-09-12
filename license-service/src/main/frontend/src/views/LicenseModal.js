@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import Snackbar from "@mui/material/Snackbar";
 import TableContainer from "@mui/material/TableContainer";
 import ProductHeader from "views/ProductHeader";
 import ProductRow from "views/ProductRow";
@@ -12,6 +13,8 @@ import { instance } from "utils/apiInstance";
 
 const LicenseModal = ({ openModal, handleCloseModal, license }) => {
   const [rows, setRows] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [checkMsg, setCheckMsg] = useState("");
 
   useEffect(() => {
     if (openModal) {
@@ -25,6 +28,10 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
     instance.get(`/license-product/license/${license}`).then(({ data }) => {
       setRows(data);
     });
+  };
+
+  const handleOpenSnackbar = () => {
+    setOpenSnackbar(true);
   };
 
   const style = {
@@ -64,6 +71,8 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
           licenseKey={license}
           updateData={getProductsByLicense}
           productsByLicense={rows.flatMap((item) => item.productName)}
+          setCheckMsg={setCheckMsg}
+          openSnackbar={handleOpenSnackbar}
         />
 
         {isNotEmptyArray(rows) ? (
@@ -71,7 +80,12 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
             <Table aria-label="collapsible table">
               <TableBody>
                 {rows.map((row, index) => (
-                  <ProductRow key={index} row={row} />
+                  <ProductRow
+                    key={index}
+                    row={row}
+                    setCheckMsg={setCheckMsg}
+                    openSnackbar={handleOpenSnackbar}
+                  />
                 ))}
               </TableBody>
             </Table>
@@ -81,6 +95,13 @@ const LicenseModal = ({ openModal, handleCloseModal, license }) => {
             등록된 제품이 없습니다
           </Typography>
         )}
+        <Snackbar
+          open={openSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          autoHideDuration={2000}
+          onClose={() => setOpenSnackbar(false)}
+          message={checkMsg}
+        />
       </Box>
     </Modal>
   );

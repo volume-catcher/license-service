@@ -6,29 +6,32 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import { styled, useTheme } from "@mui/material/styles";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { styled, useTheme } from "@mui/material/styles";
-import Snackbar from "@mui/material/Snackbar";
+import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
 import ProductEdit from "views/ProductEdit";
 import ProductDetail from "views/ProductDetail";
 import { instance } from "utils/apiInstance";
 
-export default function ProductRow({ row }) {
+export default function ProductRow(props) {
   const theme = useTheme();
+  const { row, setCheckMsg, openSnackbar } = props;
   const { licenseKey, productName } = row;
 
   const [openPanel, setOpenPanel] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [openMsg, setOpenMsg] = useState(false);
 
   const [numOfAuthAvailable, setNumOfAuthAvailable] = useState(
     row.numOfAuthAvailable
   );
   const [isActivated, setIsActivated] = useState(row.isActivated);
   const [expireAt, setExpireAt] = useState(row.expireAt);
-  const [checkMsg, setCheckMsg] = useState("");
+
+  const [oldNumOfAuthAvailable, setOldNumOfAuthAvailable] = useState();
+  const [oldIsActivated, setOldIsActivated] = useState();
+  const [oldExpireAt, setOldExpireAt] = useState();
 
   const StyledTableRow = styled(TableRow)(() => ({
     backgroundColor: theme.palette.grey[100],
@@ -67,7 +70,7 @@ export default function ProductRow({ row }) {
         }
       })
       .finally(() => {
-        setOpenMsg(true);
+        openSnackbar();
       });
   };
 
@@ -79,21 +82,32 @@ export default function ProductRow({ row }) {
     } else {
       setEdit(true);
       setOpenPanel(true);
+      setOldNumOfAuthAvailable(numOfAuthAvailable);
+      setOldIsActivated(isActivated);
+      setOldExpireAt(expireAt);
     }
+  };
+
+  const handleCancelOnClick = (e) => {
+    e.stopPropagation();
+    setNumOfAuthAvailable(oldNumOfAuthAvailable);
+    setIsActivated(oldIsActivated);
+    setExpireAt(oldExpireAt);
+    setEdit(false);
   };
 
   return (
     <>
       <StyledTableRow onClick={() => setOpenPanel(!openPanel)}>
-        <TableCell>
+        <TableCell sx={{ width: "30%" }}>
           <IconButton aria-label="expand row" size="small">
             {openPanel ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" sx={{ width: "40%" }}>
           {productName}
         </TableCell>
-        <TableCell>
+        <TableCell sx={{ width: "15%" }}>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -101,6 +115,17 @@ export default function ProductRow({ row }) {
           >
             {edit ? <CheckIcon /> : <EditIcon />}
           </IconButton>
+        </TableCell>
+        <TableCell sx={{ width: "15%" }}>
+          {edit && (
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={handleCancelOnClick}
+            >
+              <CancelIcon />
+            </IconButton>
+          )}
         </TableCell>
       </StyledTableRow>
       <TableRow key={productName}>
@@ -128,13 +153,6 @@ export default function ProductRow({ row }) {
           </Collapse>
         </TableCell>
       </TableRow>
-      <Snackbar
-        open={openMsg}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        autoHideDuration={2000}
-        onClose={() => setOpenMsg(false)}
-        message={checkMsg}
-      />
     </>
   );
 }

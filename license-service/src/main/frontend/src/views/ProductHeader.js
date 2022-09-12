@@ -6,14 +6,19 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import Snackbar from "@mui/material/Snackbar";
 import { useTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
 import ProductEdit from "views/ProductEdit";
 import { instance } from "utils/apiInstance";
 import { isNotEmptyArray } from "utils/utils";
 
-const ProductHeader = ({ licenseKey, updateData, productsByLicense }) => {
+const ProductHeader = ({
+  licenseKey,
+  updateData,
+  productsByLicense,
+  setCheckMsg,
+  openSnackbar,
+}) => {
   const theme = useTheme();
   const defaultValue = {
     productName: "",
@@ -27,8 +32,6 @@ const ProductHeader = ({ licenseKey, updateData, productsByLicense }) => {
   const [numOfAuthAvailable, setNumOfAuthAvailable] = useState();
   const [isActivated, setIsActivated] = useState();
   const [expireAt, setExpireAt] = useState();
-  const [checkMsg, setCheckMsg] = useState("");
-  const [openMsg, setOpenMsg] = useState(false);
   const [options, setOptions] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -99,7 +102,7 @@ const ProductHeader = ({ licenseKey, updateData, productsByLicense }) => {
         }
       })
       .finally(() => {
-        setOpenMsg(true);
+        openSnackbar();
       });
   };
 
@@ -181,13 +184,6 @@ const ProductHeader = ({ licenseKey, updateData, productsByLicense }) => {
           </Box>
         </Collapse>
       </Box>
-      <Snackbar
-        open={openMsg}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        autoHideDuration={2000}
-        onClose={() => setOpenMsg(false)}
-        message={checkMsg}
-      />
     </>
   );
 };

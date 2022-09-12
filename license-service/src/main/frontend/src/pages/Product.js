@@ -18,7 +18,10 @@ const Product = () => {
   const [checkMsg, setCheckMsg] = useState("");
   const [product, setProduct] = useState("");
 
-  const columns = ["순번", "제품명"];
+  const columns = [
+    { id: "id", label: "순번", width: "30%" },
+    { id: "name", label: "제품명", width: "70%" },
+  ];
 
   useEffect(() => {
     getRows();
@@ -27,8 +30,9 @@ const Product = () => {
   const getRows = useCallback(() => {
     instance.get("/product").then(({ data }) => {
       if (!!data) {
-        data.forEach((item, index) => (item.id = index));
-        setRows(data);
+        setRows(
+          data.map((item, index) => ({ id: index + 1, name: item.name }))
+        );
       }
     });
   });
