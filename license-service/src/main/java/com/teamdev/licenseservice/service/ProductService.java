@@ -2,7 +2,6 @@ package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
-import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.Product;
 import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.ErrorMessage;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,28 +56,20 @@ public class ProductService {
 
     @Transactional
     public Product saveProductWithValidAccount(ProductDto productDto) {
-        Optional<Account> account = accountRepository.findById(productDto.getId());
-
-        if (account.isEmpty()) {
-            throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND);
-        }
-
-        Product product = Product.builder()
-                .name(productDto.getName())
-                .account(account.get())
-                .build();
-
-        return productRepository.save(product);
+        return accountRepository.findById(productDto.getId())
+                .map(account -> {
+                    Product product = Product.builder()
+                            .name(productDto.getName())
+                            .account(account)
+                            .build();
+                    return productRepository.save(product);
+                })
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
     }
 
     public Product getProductByName(ProductNameDto productNameDto) {
-        Optional<Product> product = productRepository.findByName(productNameDto.getName());
-
-        if (product.isEmpty()) {
-            throw new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND);
-        }
-
-        return product.get();
+        return productRepository.findByName(productNameDto.getName())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND));
     }
 
 }

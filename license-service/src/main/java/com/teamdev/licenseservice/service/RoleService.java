@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class RoleService {
@@ -17,15 +15,12 @@ public class RoleService {
 
     @Transactional
     public Role getOrSaveRole(RoleDto roleDto) {
-        Optional<Role> preRole = roleRepository.findByName(roleDto.getName());
-        if (preRole.isPresent()) {
-            return preRole.get();
-        }
-
-        Role role = Role.builder()
-                .name(roleDto.getName())
-                .build();
-
-        return roleRepository.save(role);
+        return roleRepository.findByName(roleDto.getName())
+                .orElseGet(() -> {
+                    Role role = Role.builder()
+                            .name(roleDto.getName())
+                            .build();
+                    return roleRepository.save(role);
+                });
     }
 }

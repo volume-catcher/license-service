@@ -1,10 +1,9 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseDto;
+import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
-import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.License;
 import com.teamdev.licenseservice.entity.LicenseProduct;
 import com.teamdev.licenseservice.exception.ErrorMessage;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +43,7 @@ public class LicenseService {
                 .key(licenseKey)
                 .accountId(id)
                 .build();
-        
+
         saveLicenseWithValidAccount(licenseDto);
 
         return LicenseKeyDto.fromLicenseDto(licenseDto);
@@ -62,34 +60,8 @@ public class LicenseService {
         return licenseRepository.findAll().stream().map(LicenseKeyDto::from).collect(Collectors.toList());
     }
 
-    @Transactional
-    public License saveLicenseWithValidAccount(LicenseDto licenseDto) {
-        Optional<Account> account = accountRepository.findById(licenseDto.getAccountId());
-
-        if (account.isEmpty()) {
-            throw new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND);
-        }
-
-        License license = License.builder()
-                .key(licenseDto.getKey())
-                .account(account.get())
-                .build();
-
-        return licenseRepository.save(license);
-    }
-
     public List<LicenseWithProductCountDto> getAllLicensesWithProductCount() {
         return licenseProductRepository.findAllLicensesWithProductCount();
-    }
-
-    public License getLicenseByKey(LicenseKeyDto licenseKeyDto) {
-        Optional<License> license = licenseRepository.findByKey(licenseKeyDto.getKey());
-
-        if (license.isEmpty()) {
-            throw new NotFoundException(ErrorMessage.LICENSE_NOT_FOUND);
-        }
-
-        return license.get();
     }
 
     public List<ProductNameDto> getProductsByLicenseKey(String licenseKey) {
@@ -99,6 +71,24 @@ public class LicenseService {
                 .map(LicenseProduct::getProduct)
                 .map(ProductNameDto::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public License saveLicenseWithValidAccount(LicenseDto licenseDto) {
+        return accountRepository.findById(licenseDto.getAccountId())
+                .map(account -> {
+                    License license = License.builder()
+                            .key(licenseDto.getKey())
+                            .account(account)
+                            .build();
+                    return licenseRepository.save(license);
+                })
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
+    }
+
+    public License getLicenseByKey(LicenseKeyDto licenseKeyDto) {
+        return licenseRepository.findByKey(licenseKeyDto.getKey())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.LICENSE_NOT_FOUND));
     }
 
 }
