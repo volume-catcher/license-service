@@ -7,27 +7,24 @@ import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdev.licenseservice.dto.LicenseProductNumDto;
 import com.teamdev.licenseservice.entity.LicenseProduct;
-import com.teamdev.licenseservice.entity.QLicense;
-import com.teamdev.licenseservice.entity.QLicenseProduct;
-import com.teamdev.licenseservice.entity.QProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.teamdev.licenseservice.entity.QLicenseProduct.licenseProduct;
+import static com.teamdev.licenseservice.entity.QLicense.license;
+import static com.teamdev.licenseservice.entity.QProduct.product;
+
 @Repository
 @RequiredArgsConstructor
 public class LicenseProductRepositoryImpl implements LicenseProductCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-    private QLicenseProduct licenseProduct = QLicenseProduct.licenseProduct;
 
     @Override
     public LicenseProduct findOneLicenseProductByLicenseKeyAndProductNameQ(String licenseKey, String productName) {
-        QLicense license = QLicense.license;
-        QProduct product = QProduct.product;
-
         return jpaQueryFactory
                 .select(licenseProduct)
                 .from(licenseProduct)
