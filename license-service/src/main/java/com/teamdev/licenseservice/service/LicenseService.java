@@ -2,6 +2,7 @@ package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseDto;
+import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.License;
@@ -75,6 +76,10 @@ public class LicenseService {
                 .build();
 
         return licenseRepository.save(license);
+    }
+
+    public List<LicenseWithProductCountDto> getAllLicensesWithProductCount() {
+        return licenseProductRepository.findAllLicensesWithProductCount();
     }
 
     public License getLicenseByKey(LicenseKeyDto licenseKeyDto) {

@@ -1,6 +1,7 @@
 package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
+import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.service.LicenseService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +28,18 @@ public class LicenseController {
         return licenseService.getLicenseCreatedById(id);
     }
 
-    @GetMapping
-    public List<LicenseKeyDto> getAllLicenses() {
-        return licenseService.getAllLicenses();
-    }
+//    @GetMapping
+//    public List<LicenseKeyDto> getAllLicenses() {
+//        return licenseService.getAllLicenses();
+//    }
 
     @GetMapping("/{licenseKey}/products")
     public List<ProductNameDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
         return licenseService.getProductsByLicenseKey(licenseKey);
+    }
+
+    @GetMapping
+    public List<LicenseWithProductCountDto> getAllLicensesWithProductCount() {
+        return licenseService.getAllLicensesWithProductCount();
     }
 }

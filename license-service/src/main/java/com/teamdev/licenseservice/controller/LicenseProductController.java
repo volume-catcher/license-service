@@ -2,7 +2,6 @@ package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.LicenseProductDto;
 import com.teamdev.licenseservice.dto.LicenseProductIsActivatedDto;
-import com.teamdev.licenseservice.dto.LicenseProductNumDto;
 import com.teamdev.licenseservice.service.LicenseProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,8 +43,4 @@ public class LicenseProductController {
         return licenseProductService.getLicenseProductsByLicenseKey(licenseKey);
     }
 
-    @GetMapping("/num")
-    public List<LicenseProductNumDto> getLicenseProductsNum() {
-        return licenseProductService.getLicenseProductsNum();
-    }
 }

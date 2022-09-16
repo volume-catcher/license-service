@@ -5,7 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdev.licenseservice.dto.LicenseProductNumDto;
+import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.entity.LicenseProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -35,12 +35,12 @@ public class LicenseProductRepositoryImpl implements LicenseProductCustom {
                 .fetchOne();
     }
 
-    public List<LicenseProductNumDto> countAllLicenseProduct() {
+    public List<LicenseWithProductCountDto> findAllLicensesWithProductCount() {
         return jpaQueryFactory
-                .select(Projections.constructor(LicenseProductNumDto.class,
+                .select(Projections.constructor(LicenseWithProductCountDto.class,
                         licenseProduct.license.key,
                         ExpressionUtils.as(
-                            licenseProduct.license.key.count(), "totalProductNum"
+                            licenseProduct.license.key.count(), "totalProductCount"
                         ),
                         ExpressionUtils.as(
                             new CaseBuilder()
@@ -48,7 +48,7 @@ public class LicenseProductRepositoryImpl implements LicenseProductCustom {
                                     .then(1)
                                     .otherwise(0)
                                     .sum(),
-                            "expiredProductNum"
+                            "expiredProductCount"
                         )
                     )
                 )

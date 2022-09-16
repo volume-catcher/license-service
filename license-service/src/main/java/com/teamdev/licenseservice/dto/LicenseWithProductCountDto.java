@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-public class LicenseProductNumDto {
+public class LicenseWithProductCountDto {
 
     @NotNull
     @Size(min = 19, max = 19)
@@ -18,17 +18,17 @@ public class LicenseProductNumDto {
 
     @NotNull
     @PositiveOrZero
-    private Long totalProductNum;
+    private Long totalProductCount;
 
     @NotNull
     @PositiveOrZero
-    private Integer expiredProductNum;
+    private Integer expiredProductCount;
 
     @Builder
-    public LicenseProductNumDto(String key, Long totalProductNum, Integer expiredProductNum) {
+    public LicenseWithProductCountDto(String key, Long totalProductCount, Integer expiredProductCount) {
         this.key = key;
-        this.totalProductNum = totalProductNum;
-        this.expiredProductNum = expiredProductNum;
+        this.totalProductCount = totalProductCount;
+        this.expiredProductCount = expiredProductCount;
     }
 
 }
