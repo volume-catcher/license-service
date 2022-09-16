@@ -2,13 +2,16 @@ package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseDto;
+import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.entity.Account;
 import com.teamdev.licenseservice.entity.License;
+import com.teamdev.licenseservice.entity.LicenseProduct;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.license.SerialNumber;
 import com.teamdev.licenseservice.repository.AccountRepository;
+import com.teamdev.licenseservice.repository.LicenseProductRepository;
 import com.teamdev.licenseservice.repository.LicenseRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class LicenseService {
 
     private final LicenseRepository licenseRepository;
     private final AccountRepository accountRepository;
+    private final LicenseProductRepository licenseProductRepository;
 
     @Transactional
     public LicenseKeyDto createLicense() {
@@ -81,6 +85,15 @@ public class LicenseService {
         }
 
         return license.get();
+    }
+
+    public List<ProductNameDto> getProductsByLicenseKey(String licenseKey) {
+        return licenseProductRepository
+                .findLicenseProductWithProductByLicenseKey(licenseKey)
+                .stream()
+                .map(LicenseProduct::getProduct)
+                .map(ProductNameDto::from)
+                .collect(Collectors.toList());
     }
 
 }

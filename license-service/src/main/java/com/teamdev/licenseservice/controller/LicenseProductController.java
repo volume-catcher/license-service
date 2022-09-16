@@ -39,7 +39,7 @@ public class LicenseProductController {
         return licenseProductService.getAllLicenseProducts();
     }
 
-    @GetMapping("/license/{licenseKey}")
+    @GetMapping("/licenses/{licenseKey}")
     public List<LicenseProductDto> getLicenseProductsByLicenseKey(@PathVariable String licenseKey) {
         return licenseProductService.getLicenseProductsByLicenseKey(licenseKey);
     }

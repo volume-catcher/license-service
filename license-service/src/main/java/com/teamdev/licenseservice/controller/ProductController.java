@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -32,8 +32,4 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/license/{licenseKey}")
-    public List<ProductNameDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
-        return productService.getProductsByLicenseKey(licenseKey);
-    }
 }

@@ -76,7 +76,6 @@ public class LicenseProductService {
         return LicenseProductDto.from(licenseProductRepository.save(licenseProduct));
     }
 
-
     public List<LicenseProductDto> getAllLicenseProducts() {
         return licenseProductRepository.findAll().stream().map(LicenseProductDto::from).collect(Collectors.toList());
     }

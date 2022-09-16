@@ -1,16 +1,14 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.dto.ProductDto;
+import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.entity.Account;
-import com.teamdev.licenseservice.entity.LicenseProduct;
 import com.teamdev.licenseservice.entity.Product;
 import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.AccountRepository;
-import com.teamdev.licenseservice.repository.LicenseProductRepository;
 import com.teamdev.licenseservice.repository.ProductRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
-    private final LicenseProductRepository licenseProductRepository;
 
     @Transactional
     public ProductNameDto createProduct(ProductNameDto productNameDto) {
@@ -57,15 +54,6 @@ public class ProductService {
 
     public List<ProductNameDto> getAllProducts() {
         return productRepository.findAll().stream().map(ProductNameDto::from).collect(Collectors.toList());
-    }
-
-    public List<ProductNameDto> getProductsByLicenseKey(String licenseKey) {
-        return licenseProductRepository
-                .findLicenseProductWithProductByLicenseKey(licenseKey)
-                .stream()
-                .map(LicenseProduct::getProduct)
-                .map(ProductNameDto::from)
-                .collect(Collectors.toList());
     }
 
     @Transactional

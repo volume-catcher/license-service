@@ -1,6 +1,7 @@
 package com.teamdev.licenseservice.controller;
 
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
+import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.service.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/license")
+@RequestMapping("/api/v1/licenses")
 @RequiredArgsConstructor
 public class LicenseController {
 
@@ -29,5 +30,10 @@ public class LicenseController {
     @GetMapping
     public List<LicenseKeyDto> getAllLicenses() {
         return licenseService.getAllLicenses();
+    }
+
+    @GetMapping("/{licenseKey}/products")
+    public List<ProductNameDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
+        return licenseService.getProductsByLicenseKey(licenseKey);
     }
 }
