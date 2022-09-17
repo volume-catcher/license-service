@@ -28,8 +28,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductNameDto> getAllProducts() {
-        return productService.getAllProducts();
+    public List<ProductNameDto> getAllProduct() {
+        return productService.getAllProduct();
     }
 
 }

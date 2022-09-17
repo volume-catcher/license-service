@@ -9,19 +9,13 @@ spring:
   # JPA
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         show_sql: true
     generate-ddl: true
     defer-datasource-initialization: true
-
-  sql:
-    init:
-      mode: never
-      data-locations: classpath:sql/data.sql
-      encoding: UTF-8
 
 # JWT
 jwt:

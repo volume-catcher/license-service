@@ -1,5 +1,6 @@
 package com.teamdev.licenseservice.controller;
 
+import com.teamdev.licenseservice.dto.ContractDto;
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
@@ -26,18 +27,23 @@ public class LicenseController {
     }
 
     @GetMapping
-    public List<LicenseWithProductCountDto> getAllLicenses(
+    public List<LicenseWithProductCountDto> getAllLicense(
             @PageableDefault(size = 5) Pageable pageable) {
-        return licenseService.getAllLicenses(pageable);
+        return licenseService.getAllLicense(pageable);
     }
 
     @GetMapping("/{id}")
-    public List<LicenseKeyDto> getLicenseCreatedById(@PathVariable String id) {
+    public List<LicenseKeyDto> getLicensesCreatedById(@PathVariable String id) {
         return licenseService.getLicenseCreatedById(id);
     }
 
     @GetMapping("/{licenseKey}/products")
     public List<ProductNameDto> getProductsByLicenseKey(@PathVariable String licenseKey) {
         return licenseService.getProductsByLicenseKey(licenseKey);
+    }
+
+    @GetMapping("/{licenseKey}/contracts")
+    public List<ContractDto> getContractsByLicenseKey(@PathVariable String licenseKey) {
+        return licenseService.getContractsByLicenseKey(licenseKey);
     }
 }

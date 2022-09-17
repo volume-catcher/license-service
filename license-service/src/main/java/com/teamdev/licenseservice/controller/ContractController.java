@@ -38,9 +38,4 @@ public class ContractController {
         return contractService.getAllContract();
     }
 
-    @GetMapping("/licenses/{licenseKey}")
-    public List<ContractDto> getContractByLicenseKey(@PathVariable String licenseKey) {
-        return contractService.getContractByLicenseKey(licenseKey);
-    }
-
 }

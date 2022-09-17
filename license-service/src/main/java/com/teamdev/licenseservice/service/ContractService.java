@@ -80,12 +80,4 @@ public class ContractService {
         return contractRepository.findAll().stream().map(ContractDto::from).collect(Collectors.toList());
     }
 
-    public List<ContractDto> getContractByLicenseKey(String licenseKey) {
-        return contractRepository
-                .findContractWithProductByLicenseKey(licenseKey)
-                .stream()
-                .map(ContractDto::from)
-                .collect(Collectors.toList());
-    }
-
 }

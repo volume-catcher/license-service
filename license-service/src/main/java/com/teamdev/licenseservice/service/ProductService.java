@@ -50,7 +50,7 @@ public class ProductService {
         return productRepository.findAllByAccountId(id).stream().map(ProductNameDto::from).collect(Collectors.toList());
     }
 
-    public List<ProductNameDto> getAllProducts() {
+    public List<ProductNameDto> getAllProduct() {
         return productRepository.findAll().stream().map(ProductNameDto::from).collect(Collectors.toList());
     }
 

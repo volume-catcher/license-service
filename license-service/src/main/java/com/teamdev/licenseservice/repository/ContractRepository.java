@@ -9,6 +9,6 @@ import java.util.List;
 public interface ContractRepository extends JpaRepository<ContractEntity, Integer>, ContractRepositoryCustom {
 
     @EntityGraph(attributePaths = "product")
-    List<ContractEntity> findContractWithProductByLicenseKey(String licenseKey);
+    List<ContractEntity> findContractByLicenseKey(String licenseKey);
 
 }
