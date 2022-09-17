@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface LicenseProductRepository extends JpaRepository<LicenseProduct, Integer>, LicenseProductCustom {
+public interface LicenseProductRepository extends JpaRepository<LicenseProduct, Integer>, LicenseProductRepositoryCustom {
 
     @EntityGraph(attributePaths = "product")
     List<LicenseProduct> findLicenseProductWithProductByLicenseKey(String licenseKey);

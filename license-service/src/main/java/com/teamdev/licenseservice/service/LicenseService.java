@@ -15,6 +15,7 @@ import com.teamdev.licenseservice.repository.LicenseProductRepository;
 import com.teamdev.licenseservice.repository.LicenseRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,12 +57,8 @@ public class LicenseService {
         return licenseRepository.findAllByAccountId(id).stream().map(LicenseKeyDto::from).collect(Collectors.toList());
     }
 
-    public List<LicenseKeyDto> getAllLicenses() {
-        return licenseRepository.findAll().stream().map(LicenseKeyDto::from).collect(Collectors.toList());
-    }
-
-    public List<LicenseWithProductCountDto> getAllLicensesWithProductCount() {
-        return licenseProductRepository.findAllLicensesWithProductCount();
+    public List<LicenseWithProductCountDto> getAllLicenses(Pageable pageable) {
+        return licenseRepository.findAllLicensesWithProductCountQ(pageable);
     }
 
     public List<ProductNameDto> getProductsByLicenseKey(String licenseKey) {
