@@ -22,11 +22,6 @@ public class ProductController {
         return productService.createProduct(productNameDto);
     }
 
-    @GetMapping("/{id}")
-    public List<ProductNameDto> getProductsCreatedById(@PathVariable String id) {
-        return productService.getProductsCreatedById(id);
-    }
-
     @GetMapping
     public List<ProductNameDto> getAllProduct() {
         return productService.getAllProduct();

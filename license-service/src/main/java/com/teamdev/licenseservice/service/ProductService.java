@@ -5,7 +5,6 @@ import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.entity.ProductEntity;
 import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.ErrorMessage;
-import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.ProductRepository;
@@ -41,13 +40,6 @@ public class ProductService {
         saveProductWithValidAccount(productDto);
 
         return ProductNameDto.fromProductDto(productDto);
-    }
-
-    public List<ProductNameDto> getProductsCreatedById(String id) {
-        if (!SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)).equals(id)) {
-            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
-        }
-        return productRepository.findAllByAccountId(id).stream().map(ProductNameDto::from).collect(Collectors.toList());
     }
 
     public List<ProductNameDto> getAllProduct() {

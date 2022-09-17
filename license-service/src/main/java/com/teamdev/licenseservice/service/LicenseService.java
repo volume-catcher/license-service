@@ -1,10 +1,11 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.*;
+import com.teamdev.licenseservice.dto.ContractDto;
+import com.teamdev.licenseservice.dto.LicenseDto;
+import com.teamdev.licenseservice.dto.LicenseKeyDto;
+import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.entity.LicenseEntity;
-import com.teamdev.licenseservice.entity.ContractEntity;
 import com.teamdev.licenseservice.exception.ErrorMessage;
-import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.license.SerialNumber;
 import com.teamdev.licenseservice.repository.AccountRepository;
@@ -47,24 +48,8 @@ public class LicenseService {
         return LicenseKeyDto.fromLicenseDto(licenseDto);
     }
 
-    public List<LicenseKeyDto> getLicenseCreatedById(String id) {
-        if (!SecurityUtil.getCurrentId().orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND)).equals(id)) {
-            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
-        }
-        return licenseRepository.findAllByAccountId(id).stream().map(LicenseKeyDto::from).collect(Collectors.toList());
-    }
-
     public List<LicenseWithProductCountDto> getAllLicense(Pageable pageable) {
         return licenseRepository.findAllLicensesWithProductCountQ(pageable);
-    }
-
-    public List<ProductNameDto> getProductsByLicenseKey(String licenseKey) {
-        return contractRepository
-                .findContractByLicenseKey(licenseKey)
-                .stream()
-                .map(ContractEntity::getProduct)
-                .map(ProductNameDto::from)
-                .collect(Collectors.toList());
     }
 
     public List<ContractDto> getContractsByLicenseKey(String licenseKey) {
