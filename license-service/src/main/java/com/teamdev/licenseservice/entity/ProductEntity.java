@@ -8,27 +8,33 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity
-@Table
-public class License extends BaseTimeEntity {
+@Entity(name = "product")
+public class ProductEntity extends BaseTimeEntity {
 
     @Id
-    @Column(name = "license_key", columnDefinition ="CHAR(19)", updatable = false)
-    @Comment("라이선스키")
-    private String key;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id", columnDefinition ="INT(11) UNSIGNED")
+    @Comment("제품ID")
+    private Integer id;
+
+    @Column(name = "product_name", nullable = false)
+    @Size(max = 45)
+    @Comment("제품이름")
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("계정ID")
-    private Account account;
+    private AccountEntity account;
 
     @Builder
-    public License(String key, Account account) {
-        this.key = key;
+    public ProductEntity(String name, AccountEntity account) {
+        this.name = name;
         this.account = account;
     }
 }

@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.teamdev.licenseservice.entity.LicenseProduct;
+import com.teamdev.licenseservice.entity.ContractEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class LicenseProductDto {
+public class ContractDto {
 
     @NotNull
     @Size(min = 19, max = 19)
@@ -37,11 +37,11 @@ public class LicenseProductDto {
     private LocalDateTime expireAt;
 
     @Builder
-    public LicenseProductDto(String licenseKey,
-                             String productName,
-                             Boolean isActivated,
-                             Integer numOfAuthAvailable,
-                             LocalDateTime expireAt) {
+    public ContractDto(String licenseKey,
+                       String productName,
+                       Boolean isActivated,
+                       Integer numOfAuthAvailable,
+                       LocalDateTime expireAt) {
         this.licenseKey = licenseKey;
         this.productName = productName;
         this.isActivated = isActivated;
@@ -49,15 +49,15 @@ public class LicenseProductDto {
         this.expireAt = expireAt;
     }
 
-    public static LicenseProductDto from(LicenseProduct licenseProduct) {
-        if (licenseProduct == null) return null;
+    public static ContractDto from(ContractEntity contractEntity) {
+        if (contractEntity == null) return null;
 
-        return LicenseProductDto.builder()
-                .licenseKey(licenseProduct.getLicense().getKey())
-                .productName(licenseProduct.getProduct().getName())
-                .isActivated(licenseProduct.getIsActivated())
-                .numOfAuthAvailable(licenseProduct.getNumOfAuthAvailable())
-                .expireAt(licenseProduct.getExpireAt())
+        return ContractDto.builder()
+                .licenseKey(contractEntity.getLicense().getKey())
+                .productName(contractEntity.getProduct().getName())
+                .isActivated(contractEntity.getIsActivated())
+                .numOfAuthAvailable(contractEntity.getNumOfAuthAvailable())
+                .expireAt(contractEntity.getExpireAt())
                 .build();
     }
 }

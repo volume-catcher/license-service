@@ -1,6 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
-import com.teamdev.licenseservice.entity.Product;
+import com.teamdev.licenseservice.entity.ProductEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +21,11 @@ public class ProductNameDto {
         this.name = name;
     }
 
-    public static ProductNameDto from(Product product) {
-        if (product == null) return null;
+    public static ProductNameDto from(ProductEntity productEntity) {
+        if (productEntity == null) return null;
 
         return ProductNameDto.builder()
-                .name(product.getName())
+                .name(productEntity.getName())
                 .build();
     }
 

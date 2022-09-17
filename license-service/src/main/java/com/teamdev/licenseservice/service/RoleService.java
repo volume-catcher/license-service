@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.RoleDto;
-import com.teamdev.licenseservice.entity.Role;
+import com.teamdev.licenseservice.entity.RoleEntity;
 import com.teamdev.licenseservice.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,13 +14,13 @@ public class RoleService {
     private final RoleRepository roleRepository;
 
     @Transactional
-    public Role getOrSaveRole(RoleDto roleDto) {
+    public RoleEntity getOrSaveRole(RoleDto roleDto) {
         return roleRepository.findByName(roleDto.getName())
                 .orElseGet(() -> {
-                    Role role = Role.builder()
+                    RoleEntity roleEntity = RoleEntity.builder()
                             .name(roleDto.getName())
                             .build();
-                    return roleRepository.save(role);
+                    return roleRepository.save(roleEntity);
                 });
     }
 }

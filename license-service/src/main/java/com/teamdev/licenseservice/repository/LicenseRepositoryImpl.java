@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.teamdev.licenseservice.entity.QLicense.license;
-import static com.teamdev.licenseservice.entity.QLicenseProduct.licenseProduct;
+import static com.teamdev.licenseservice.entity.QLicenseEntity.licenseEntity;
+import static com.teamdev.licenseservice.entity.QContractEntity.contractEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,15 +24,15 @@ public class LicenseRepositoryImpl implements LicenseRepositoryCustom {
 
     @Override
     public List<LicenseWithProductCountDto> findAllLicensesWithProductCountQ(Pageable pageable) {
-        return  jpaQueryFactory
+        return jpaQueryFactory
                 .select(Projections.constructor(LicenseWithProductCountDto.class,
-                                license.key,
+                                licenseEntity.key,
                                 ExpressionUtils.as(
-                                        licenseProduct.id.count(), "totalProductCount"
+                                        contractEntity.id.count(), "totalProductCount"
                                 ),
                                 ExpressionUtils.as(
                                         new CaseBuilder()
-                                                .when(licenseProduct.expireAt.before(
+                                                .when(contractEntity.expireAt.before(
                                                         DateTimeExpression.currentTimestamp(LocalDateTime.class)))
                                                 .then(1)
                                                 .otherwise(0)
@@ -41,10 +41,10 @@ public class LicenseRepositoryImpl implements LicenseRepositoryCustom {
                                 )
                         )
                 )
-                .from(licenseProduct)
-                .rightJoin(licenseProduct.license, license)
-                .groupBy(license.key)
-                .orderBy(license.createAt.desc())
+                .from(contractEntity)
+                .rightJoin(contractEntity.license, licenseEntity)
+                .groupBy(licenseEntity.key)
+                .orderBy(licenseEntity.createAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

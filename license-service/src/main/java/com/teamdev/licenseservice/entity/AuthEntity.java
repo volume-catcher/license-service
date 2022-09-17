@@ -13,9 +13,8 @@ import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity
-@Table
-public class Auth extends BaseTimeEntity {
+@Entity(name = "auth")
+public class AuthEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,16 +35,16 @@ public class Auth extends BaseTimeEntity {
     @JoinColumn(name = "license_key", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("라이선스키")
-    private License license;
+    private LicenseEntity license;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("제품ID")
-    private Product product;
+    private ProductEntity product;
 
     @Builder
-    public Auth(UUID device, Boolean isActivated, License license, Product product) {
+    public AuthEntity(UUID device, Boolean isActivated, LicenseEntity license, ProductEntity product) {
         this.device = device;
         this.isActivated = isActivated;
         this.license = license;

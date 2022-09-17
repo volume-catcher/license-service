@@ -4,14 +4,14 @@ import com.teamdev.licenseservice.dto.LicenseDto;
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
-import com.teamdev.licenseservice.entity.License;
-import com.teamdev.licenseservice.entity.LicenseProduct;
+import com.teamdev.licenseservice.entity.LicenseEntity;
+import com.teamdev.licenseservice.entity.ContractEntity;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.ForbiddenException;
 import com.teamdev.licenseservice.exception.NotFoundException;
 import com.teamdev.licenseservice.license.SerialNumber;
 import com.teamdev.licenseservice.repository.AccountRepository;
-import com.teamdev.licenseservice.repository.LicenseProductRepository;
+import com.teamdev.licenseservice.repository.ContractRepository;
 import com.teamdev.licenseservice.repository.LicenseRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class LicenseService {
 
     private final LicenseRepository licenseRepository;
     private final AccountRepository accountRepository;
-    private final LicenseProductRepository licenseProductRepository;
+    private final ContractRepository contractRepository;
 
     @Transactional
     public LicenseKeyDto createLicense() {
@@ -62,28 +62,28 @@ public class LicenseService {
     }
 
     public List<ProductNameDto> getProductsByLicenseKey(String licenseKey) {
-        return licenseProductRepository
-                .findLicenseProductWithProductByLicenseKey(licenseKey)
+        return contractRepository
+                .findContractWithProductByLicenseKey(licenseKey)
                 .stream()
-                .map(LicenseProduct::getProduct)
+                .map(ContractEntity::getProduct)
                 .map(ProductNameDto::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public License saveLicenseWithValidAccount(LicenseDto licenseDto) {
+    public LicenseEntity saveLicenseWithValidAccount(LicenseDto licenseDto) {
         return accountRepository.findById(licenseDto.getAccountId())
                 .map(account -> {
-                    License license = License.builder()
+                    LicenseEntity licenseEntity = LicenseEntity.builder()
                             .key(licenseDto.getKey())
                             .account(account)
                             .build();
-                    return licenseRepository.save(license);
+                    return licenseRepository.save(licenseEntity);
                 })
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
     }
 
-    public License getLicenseByKey(LicenseKeyDto licenseKeyDto) {
+    public LicenseEntity getLicenseByKey(LicenseKeyDto licenseKeyDto) {
         return licenseRepository.findByKey(licenseKeyDto.getKey())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.LICENSE_NOT_FOUND));
     }

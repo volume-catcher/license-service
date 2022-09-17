@@ -1,6 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
-import com.teamdev.licenseservice.entity.Product;
+import com.teamdev.licenseservice.entity.ProductEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +25,12 @@ public class ProductDto {
         this.id = id;
     }
 
-    public static ProductDto from(Product product) {
-        if (product == null) return null;
+    public static ProductDto from(ProductEntity productEntity) {
+        if (productEntity == null) return null;
 
         return ProductDto.builder()
-                .id(product.getAccount().getId())
-                .name(product.getName())
+                .id(productEntity.getAccount().getId())
+                .name(productEntity.getName())
                 .build();
     }
 }

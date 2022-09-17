@@ -12,9 +12,8 @@ import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity
-@Table
-public class Account {
+@Entity(name = "account")
+public class AccountEntity {
 
     @Id
     @Column(name = "account_id", columnDefinition ="VARCHAR(20)", updatable = false)
@@ -33,10 +32,10 @@ public class Account {
             name="account_role",
             joinColumns={@JoinColumn(name = "account_id")},
             inverseJoinColumns={@JoinColumn(name="role_id")})
-    private Set<Role> roles;
+    private Set<RoleEntity> roles;
 
     @Builder
-    public Account(String id, String password, Set<Role> roles) {
+    public AccountEntity(String id, String password, Set<RoleEntity> roles) {
         this.id = id;
         this.password = password;
         this.roles = roles;

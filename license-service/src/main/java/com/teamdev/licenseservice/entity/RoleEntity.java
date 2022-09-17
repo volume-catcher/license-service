@@ -11,9 +11,8 @@ import javax.validation.constraints.Size;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity
-@Table
-public class Role {
+@Entity(name = "role")
+public class RoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +26,7 @@ public class Role {
     private String name;
 
     @Builder
-    public Role(String name) {
+    public RoleEntity(String name) {
         this.name = name;
     }
 

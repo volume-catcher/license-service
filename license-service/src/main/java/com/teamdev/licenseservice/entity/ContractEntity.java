@@ -10,14 +10,13 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity
-@Table(name = "license_product")
-public class LicenseProduct extends BaseTimeEntity {
+@Entity(name = "contract")
+public class ContractEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "license_product_id", columnDefinition ="INT(11) UNSIGNED")
-    @Comment("라이선스_제품ID")
+    @Column(name = "contract_id", columnDefinition ="INT(11) UNSIGNED")
+    @Comment("계약ID")
     private Integer id;
 
     @Setter
@@ -41,20 +40,20 @@ public class LicenseProduct extends BaseTimeEntity {
     @JoinColumn(name = "license_key", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("라이선스키")
-    private License license;
+    private LicenseEntity license;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", updatable = false, nullable = false)
     @JsonIgnore
     @Comment("제품ID")
-    private Product product;
+    private ProductEntity product;
 
     @Builder
-    public LicenseProduct(Integer numOfAuthAvailable,
+    public ContractEntity(Integer numOfAuthAvailable,
                           Boolean isActivated,
                           LocalDateTime expireAt,
-                          License license,
-                          Product product) {
+                          LicenseEntity license,
+                          ProductEntity product) {
         this.numOfAuthAvailable = numOfAuthAvailable;
         this.isActivated = isActivated;
         this.expireAt = expireAt;

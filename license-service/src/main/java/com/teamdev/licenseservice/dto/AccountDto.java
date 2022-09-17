@@ -1,7 +1,7 @@
 package com.teamdev.licenseservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.teamdev.licenseservice.entity.Account;
+import com.teamdev.licenseservice.entity.AccountEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,13 +33,13 @@ public class AccountDto {
         this.roleDtoSet = roleDtoSet;
     }
 
-    public static AccountDto from(Account account) {
-        if (account == null) return null;
+    public static AccountDto from(AccountEntity accountEntity) {
+        if (accountEntity == null) return null;
 
         return AccountDto.builder()
-                .id(account.getId())
-                .password(account.getPassword())
-                .roleDtoSet(account.getRoles().stream()
+                .id(accountEntity.getId())
+                .password(accountEntity.getPassword())
+                .roleDtoSet(accountEntity.getRoles().stream()
                         .map(role -> RoleDto.builder().name(role.getName()).build())
                         .collect(Collectors.toSet()))
                 .build();

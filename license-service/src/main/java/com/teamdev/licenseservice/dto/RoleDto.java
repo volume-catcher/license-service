@@ -1,6 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
-import com.teamdev.licenseservice.entity.Role;
+import com.teamdev.licenseservice.entity.RoleEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +15,11 @@ public class RoleDto {
         this.name = name;
     }
 
-    public static RoleDto from(Role role) {
-        if (role == null) return null;
+    public static RoleDto from(RoleEntity roleEntity) {
+        if (roleEntity == null) return null;
 
         return RoleDto.builder()
-                .name(role.getName())
+                .name(roleEntity.getName())
                 .build();
     }
 }

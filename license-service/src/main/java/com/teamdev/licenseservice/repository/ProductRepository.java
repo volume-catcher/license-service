@@ -1,13 +1,13 @@
 package com.teamdev.licenseservice.repository;
 
-import com.teamdev.licenseservice.entity.Product;
+import com.teamdev.licenseservice.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 
-    Optional<Product> findByName(String name);
-    List<Product> findAllByAccountId(String id);
+    Optional<ProductEntity> findByName(String name);
+    List<ProductEntity> findAllByAccountId(String id);
 }

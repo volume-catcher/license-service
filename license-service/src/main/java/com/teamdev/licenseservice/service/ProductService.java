@@ -2,7 +2,7 @@ package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
-import com.teamdev.licenseservice.entity.Product;
+import com.teamdev.licenseservice.entity.ProductEntity;
 import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.ForbiddenException;
@@ -55,19 +55,19 @@ public class ProductService {
     }
 
     @Transactional
-    public Product saveProductWithValidAccount(ProductDto productDto) {
+    public ProductEntity saveProductWithValidAccount(ProductDto productDto) {
         return accountRepository.findById(productDto.getId())
                 .map(account -> {
-                    Product product = Product.builder()
+                    ProductEntity productEntity = ProductEntity.builder()
                             .name(productDto.getName())
                             .account(account)
                             .build();
-                    return productRepository.save(product);
+                    return productRepository.save(productEntity);
                 })
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ACCOUNT_NOT_FOUND));
     }
 
-    public Product getProductByName(ProductNameDto productNameDto) {
+    public ProductEntity getProductByName(ProductNameDto productNameDto) {
         return productRepository.findByName(productNameDto.getName())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND));
     }

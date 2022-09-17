@@ -1,6 +1,6 @@
 package com.teamdev.licenseservice.dto;
 
-import com.teamdev.licenseservice.entity.License;
+import com.teamdev.licenseservice.entity.LicenseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +21,11 @@ public class LicenseKeyDto {
         this.key = key;
     }
 
-    public static LicenseKeyDto from(License license) {
-        if (license == null) return null;
+    public static LicenseKeyDto from(LicenseEntity licenseEntity) {
+        if (licenseEntity == null) return null;
 
         return LicenseKeyDto.builder()
-                .key(license.getKey())
+                .key(licenseEntity.getKey())
                 .build();
     }
 
