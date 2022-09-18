@@ -1,9 +1,6 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.dto.ContractDto;
-import com.teamdev.licenseservice.dto.LicenseDto;
-import com.teamdev.licenseservice.dto.LicenseKeyDto;
-import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
+import com.teamdev.licenseservice.dto.*;
 import com.teamdev.licenseservice.entity.LicenseEntity;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.NotFoundException;
@@ -48,8 +45,9 @@ public class LicenseService {
         return LicenseKeyDto.fromLicenseDto(licenseDto);
     }
 
-    public List<LicenseWithProductCountDto> getAllLicense(Pageable pageable) {
-        return licenseRepository.findAllLicensesWithProductCountQ(pageable);
+    public PageDto<LicenseWithProductCountDto> getAllLicense(Pageable pageable) {
+        return PageDto.from(licenseRepository
+                .findAllLicensesWithProductCountQ(pageable));
     }
 
     public List<ContractDto> getContractsByLicenseKey(String licenseKey) {

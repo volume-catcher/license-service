@@ -3,6 +3,7 @@ package com.teamdev.licenseservice.controller;
 import com.teamdev.licenseservice.dto.ContractDto;
 import com.teamdev.licenseservice.dto.LicenseKeyDto;
 import com.teamdev.licenseservice.dto.LicenseWithProductCountDto;
+import com.teamdev.licenseservice.dto.PageDto;
 import com.teamdev.licenseservice.service.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class LicenseController {
     }
 
     @GetMapping
-    public List<LicenseWithProductCountDto> getAllLicense(
+    public PageDto<LicenseWithProductCountDto> getAllLicense(
             @PageableDefault(size = 5) Pageable pageable) {
         return licenseService.getAllLicense(pageable);
     }
