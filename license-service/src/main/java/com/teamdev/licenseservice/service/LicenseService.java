@@ -47,7 +47,12 @@ public class LicenseService {
 
     public PageDto<LicenseWithProductCountDto> getAllLicense(Pageable pageable) {
         return PageDto.from(licenseRepository
-                .findAllLicensesWithProductCountQ(pageable));
+                .findAllLicenseWithProductCountQ(pageable));
+    }
+
+    public PageDto<LicenseWithProductCountDto> getAllLicense(String searchWord, Pageable pageable) {
+        return PageDto.from(licenseRepository
+                .findAllLicenseWithProductCountQ(searchWord, pageable));
     }
 
     public List<ContractDto> getContractsByLicenseKey(String licenseKey) {

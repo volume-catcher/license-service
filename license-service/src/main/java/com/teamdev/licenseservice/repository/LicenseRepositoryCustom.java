@@ -6,5 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface LicenseRepositoryCustom {
 
-    Page<LicenseWithProductCountDto> findAllLicensesWithProductCountQ(Pageable pageable);
+    Page<LicenseWithProductCountDto> findAllLicenseWithProductCountQ(Pageable pageable);
+    Page<LicenseWithProductCountDto> findAllLicenseWithProductCountQ(String searchWord, Pageable pageable);
 }

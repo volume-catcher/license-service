@@ -26,8 +26,23 @@ public class LicenseRepositoryImpl implements LicenseRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<LicenseWithProductCountDto> findAllLicensesWithProductCountQ(Pageable pageable) {
-        List<LicenseWithProductCountDto> results = jpaQueryFactory
+    public Page<LicenseWithProductCountDto> findAllLicenseWithProductCountQ(Pageable pageable) {
+        List<LicenseWithProductCountDto> results = queryFindLicenseWithProductCountQ(pageable).fetch();
+        return PageableExecutionUtils.getPage(results, pageable, queryGetCount()::fetchOne);
+    }
+
+    @Override
+    public Page<LicenseWithProductCountDto> findAllLicenseWithProductCountQ(String searchWord, Pageable pageable) {
+        List<LicenseWithProductCountDto> results = queryFindLicenseWithProductCountQ(pageable)
+                .where(licenseEntity.key.contains(searchWord))
+                .fetch();
+
+        return PageableExecutionUtils.getPage(results, pageable,
+                queryGetCount().where(licenseEntity.key.contains(searchWord))::fetchOne);
+    }
+
+    private JPAQuery<LicenseWithProductCountDto> queryFindLicenseWithProductCountQ(Pageable pageable) {
+        return jpaQueryFactory
                 .select(Projections.constructor(LicenseWithProductCountDto.class,
                                 licenseEntity.key,
                                 ExpressionUtils.as(
@@ -49,13 +64,10 @@ public class LicenseRepositoryImpl implements LicenseRepositoryCustom {
                 .groupBy(licenseEntity.key)
                 .orderBy(licenseEntity.createAt.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        return PageableExecutionUtils.getPage(results, pageable, getTotalCount()::fetchOne);
+                .limit(pageable.getPageSize());
     }
 
-    private JPAQuery<Long> getTotalCount() {
+    private JPAQuery<Long> queryGetCount() {
         return jpaQueryFactory
                 .select(licenseEntity.key.count())
                 .from(licenseEntity);

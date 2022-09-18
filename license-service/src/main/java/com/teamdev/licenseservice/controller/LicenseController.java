@@ -32,6 +32,13 @@ public class LicenseController {
         return licenseService.getAllLicense(pageable);
     }
 
+    @GetMapping("/{searchWord}")
+    public PageDto<LicenseWithProductCountDto> getAllLicense(
+            @PathVariable String searchWord,
+            @PageableDefault(size = 5) Pageable pageable) {
+        return licenseService.getAllLicense(searchWord, pageable);
+    }
+
     @GetMapping("/{licenseKey}/contracts")
     public List<ContractDto> getContractsByLicenseKey(@PathVariable String licenseKey) {
         return licenseService.getContractsByLicenseKey(licenseKey);
