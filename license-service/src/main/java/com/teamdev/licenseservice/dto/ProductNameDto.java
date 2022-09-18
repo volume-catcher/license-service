@@ -29,7 +29,7 @@ public class ProductNameDto {
                 .build();
     }
 
-    public static ProductNameDto fromProductDto(ProductDto productDto) {
+    public static ProductNameDto from(ProductDto productDto) {
         if (productDto == null) return null;
 
         return ProductNameDto.builder()

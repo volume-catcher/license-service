@@ -1,5 +1,6 @@
 package com.teamdev.licenseservice.service;
 
+import com.teamdev.licenseservice.dto.PageDto;
 import com.teamdev.licenseservice.dto.ProductDto;
 import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.entity.ProductEntity;
@@ -10,11 +11,9 @@ import com.teamdev.licenseservice.repository.AccountRepository;
 import com.teamdev.licenseservice.repository.ProductRepository;
 import com.teamdev.licenseservice.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,11 +38,13 @@ public class ProductService {
 
         saveProductWithValidAccount(productDto);
 
-        return ProductNameDto.fromProductDto(productDto);
+        return ProductNameDto.from(productDto);
     }
 
-    public List<ProductNameDto> getAllProduct() {
-        return productRepository.findAll().stream().map(ProductNameDto::from).collect(Collectors.toList());
+    public PageDto<ProductNameDto> getAllProduct(Pageable pageable) {
+        return PageDto.from(productRepository
+                .findAll(pageable)
+                .map(ProductNameDto::from));
     }
 
     @Transactional
