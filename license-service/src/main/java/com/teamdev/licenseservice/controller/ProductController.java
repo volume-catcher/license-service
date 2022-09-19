@@ -1,17 +1,19 @@
 package com.teamdev.licenseservice.controller;
 
-import com.teamdev.licenseservice.dto.ProductDto;
-import com.teamdev.licenseservice.dto.ProductResponseDto;
+import com.teamdev.licenseservice.dto.PageDto;
+import com.teamdev.licenseservice.dto.ProductNameDto;
 import com.teamdev.licenseservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -19,17 +21,15 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ProductResponseDto createProduct(@Valid @RequestBody ProductDto productDto) {
-        return productService.createProduct(productDto);
-    }
-
-    @GetMapping("/{id}")
-    public List<ProductResponseDto> getProductsCreatedById(@PathVariable String id) {
-        return productService.getProductsCreatedById(id);
+    public ProductNameDto createProduct(@Valid @RequestBody ProductNameDto productNameDto) {
+        return productService.createProduct(productNameDto);
     }
 
     @GetMapping
-    public List<ProductResponseDto> getAllProducts() {
-        return productService.getAllProducts();
+    public PageDto<ProductNameDto> getAllProduct(
+            @PageableDefault(size = 5, sort = "createAt", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return productService.getAllProduct(pageable);
     }
+
 }

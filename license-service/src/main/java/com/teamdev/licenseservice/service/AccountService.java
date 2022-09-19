@@ -2,8 +2,8 @@ package com.teamdev.licenseservice.service;
 
 import com.teamdev.licenseservice.dto.AccountDto;
 import com.teamdev.licenseservice.dto.RoleDto;
-import com.teamdev.licenseservice.entity.Account;
-import com.teamdev.licenseservice.entity.Role;
+import com.teamdev.licenseservice.entity.AccountEntity;
+import com.teamdev.licenseservice.entity.RoleEntity;
 import com.teamdev.licenseservice.exception.DuplicatedException;
 import com.teamdev.licenseservice.exception.ErrorMessage;
 import com.teamdev.licenseservice.exception.NotFoundException;
@@ -31,17 +31,17 @@ public class AccountService {
             throw new DuplicatedException(ErrorMessage.ACCOUNT_DUPLICATED);
         }
 
-        Role role = roleService.getOrSaveRole(RoleDto.builder()
+        RoleEntity roleEntity = roleService.getOrSaveRole(RoleDto.builder()
                 .name("ROLE_USER")
                 .build());
 
-        Account account = Account.builder()
+        AccountEntity accountEntity = AccountEntity.builder()
                 .id(accountDto.getId())
                 .password(passwordEncoder.encode(accountDto.getPassword()))
-                .roles(Collections.singleton(role))
+                .roles(Collections.singleton(roleEntity))
                 .build();
 
-        return AccountDto.from(accountRepository.save(account));
+        return AccountDto.from(accountRepository.save(accountEntity));
     }
 
     public AccountDto getAccountWithRoles(String id) {

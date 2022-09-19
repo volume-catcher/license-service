@@ -1,6 +1,6 @@
 package com.teamdev.licenseservice.service;
 
-import com.teamdev.licenseservice.entity.Account;
+import com.teamdev.licenseservice.entity.AccountEntity;
 import com.teamdev.licenseservice.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,13 +28,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
-    private org.springframework.security.core.userdetails.User createUser(Account account) {
-        List<GrantedAuthority> grantedRoles = account.getRoles().stream()
+    private org.springframework.security.core.userdetails.User createUser(AccountEntity accountEntity) {
+        List<GrantedAuthority> grantedRoles = accountEntity.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.User(account.getId(),
-                account.getPassword(),
+        return new org.springframework.security.core.userdetails.User(accountEntity.getId(),
+                accountEntity.getPassword(),
                 grantedRoles);
     }
 }

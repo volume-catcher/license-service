@@ -21,12 +21,12 @@ public class AccountController {
         return accountService.signUp(accountDto);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public AccountDto getMyUserInfo() {
         return accountService.getMyAccountWithRoles();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     public AccountDto getUserInfo(@PathVariable String id) {
         return accountService.getAccountWithRoles(id);
     }

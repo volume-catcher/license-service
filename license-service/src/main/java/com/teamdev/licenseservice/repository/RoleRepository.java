@@ -1,11 +1,11 @@
 package com.teamdev.licenseservice.repository;
 
-import com.teamdev.licenseservice.entity.Role;
+import com.teamdev.licenseservice.entity.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends JpaRepository<RoleEntity, Integer> {
 
-    Optional<Role> findByName(String name);
+    Optional<RoleEntity> findByName(String name);
 }
