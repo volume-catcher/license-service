@@ -22,10 +22,10 @@ public class LicenseWithProductCountDto {
 
     @NotNull
     @PositiveOrZero
-    private Integer expiredProductCount;
+    private Long expiredProductCount;
 
     @Builder
-    public LicenseWithProductCountDto(String key, Long totalProductCount, Integer expiredProductCount) {
+    public LicenseWithProductCountDto(String key, Long totalProductCount, Long expiredProductCount) {
         this.key = key;
         this.totalProductCount = totalProductCount;
         this.expiredProductCount = expiredProductCount;
