@@ -8,6 +8,14 @@ export const isNotEmptyString = (value) => {
   );
 };
 
+export const isNotEmptyObject = (value) => {
+  return value.constructor === Object && Object.keys(value).length !== 0;
+};
+
 export const isPositiveOrZeroNumber = (value) => {
   return (typeof value === "number" || !isNaN(value)) && value >= 0;
+};
+
+export const isNotNull = (value) => {
+  return value !== null && value !== undefined;
 };

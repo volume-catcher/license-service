@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
@@ -6,44 +6,55 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useTheme } from "@mui/material/styles";
-import { isNotEmptyString, isNotEmptyArray } from "utils/utils";
+import { isNotEmptyString, isNotNull } from "utils/utils";
 import { instance } from "utils/apiInstance";
 import SearchTable from "views/SearchTable";
 import LicenseModal from "views/LicenseModal";
-import FallbackMsg from "views/FallbackMsg";
 
 const License = () => {
   const theme = useTheme();
   const [checkMsg, setCheckMsg] = useState("");
   const [response, setResponse] = useState("");
   const [rows, setRows] = useState([]);
+  const [totalElements, setTotalElements] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState();
 
   const columns = [
     { id: "id", label: "순번", width: "16%" },
     { id: "name", label: "라이선스 키", width: "38%" },
-    { id: "totalProductNum", label: "등록 제품", width: "23%" },
-    { id: "expiredProductNum", label: "만료 제품", width: "23%" },
+    { id: "totalProductCount", label: "등록 제품", width: "23%" },
+    { id: "expiredProductCount", label: "만료 제품", width: "23%" },
   ];
 
-  useEffect(() => {
-    getRows();
-  }, []);
+  const getRows = (searchWord, page, order, orderBy) => {
+    const uri = getUri(searchWord, page, order, orderBy);
 
-  const getRows = useCallback(() => {
-    instance.get("/license-product/num").then((res) => {
-      const { data } = res;
-      setRows(
-        data.map((item, index) => ({
-          id: index + 1,
-          name: item.key,
-          totalProductNum: item.totalProductNum,
-          expiredProductNum: item.expiredProductNum,
-        }))
-      );
+    instance.get(uri).then(({ data }) => {
+      setRows(data.content);
+      setTotalElements(data.totalElements);
     });
-  });
+  };
+
+  const getUri = (searchWord, page, order, orderBy) => {
+    let uri = "/licenses";
+
+    if (isNotEmptyString(searchWord)) {
+      uri += `/${searchWord}`;
+    }
+
+    if (!isNotNull(page)) {
+      page = 0;
+    }
+
+    uri += `?page=${page}`;
+
+    if (isNotNull(orderBy)) {
+      uri += `&sort=${orderBy},${order}`;
+    }
+
+    return uri;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -52,7 +63,7 @@ const License = () => {
 
   const createLicense = () => {
     instance
-      .post("/license")
+      .post("/licenses")
       .then(({ data }) => {
         setResponse(data.key);
         setCheckMsg("생성되었습니다");
@@ -134,28 +145,21 @@ const License = () => {
               전체 라이선스 목록
             </Typography>
             <Box sx={{ mt: 3 }}>
-              {isNotEmptyArray(rows) ? (
-                <>
-                  <SearchTable
-                    rows={rows}
-                    columns={columns}
-                    placeholder={"라이선스 키 검색"}
-                    rowOnClick={handleOpenModal}
-                    sortable
-                  />
-                  <LicenseModal
-                    openModal={openModal}
-                    handleCloseModal={handleCloseModal}
-                    license={selectedLicense}
-                    refreshData={getRows}
-                  />
-                </>
-              ) : (
-                <FallbackMsg
-                  text="라이선스를 불러올 수 없습니다"
-                  retry={getRows}
-                />
-              )}
+              <SearchTable
+                getData={getRows}
+                count={totalElements}
+                rows={rows}
+                columns={columns}
+                placeholder={"라이선스 키 검색"}
+                rowOnClick={handleOpenModal}
+                sortable
+              />
+              <LicenseModal
+                openModal={openModal}
+                handleCloseModal={handleCloseModal}
+                license={selectedLicense}
+                refreshData={getRows}
+              />
             </Box>
           </Container>
         </Grid>

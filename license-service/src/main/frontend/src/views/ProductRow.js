@@ -47,7 +47,7 @@ export default function ProductRow(props) {
     }
   }, [openPanel]);
 
-  const updateProductOnLicense = () => {
+  const updateContract = () => {
     const data = {
       licenseKey: licenseKey,
       productName: productName,
@@ -57,7 +57,7 @@ export default function ProductRow(props) {
     };
 
     instance
-      .put("/license-product", data)
+      .put("/contracts", data)
       .then(() => {
         setEdit(false);
         setCheckMsg("수정되었습니다");
@@ -81,7 +81,7 @@ export default function ProductRow(props) {
     e.preventDefault();
     e.stopPropagation();
     if (edit) {
-      updateProductOnLicense();
+      updateContract();
     } else {
       setEdit(true);
       setOpenPanel(true);
