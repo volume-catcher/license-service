@@ -50,6 +50,12 @@ public class ProductService {
                 .map(ProductNameDto::from));
     }
 
+    public PageDto<ProductNameDto> getAllProduct(String searchWord, Pageable pageable) {
+        return PageDto.from(productRepository
+                .findAllByNameContainingIgnoreCase(searchWord, pageable)
+                .map(ProductNameDto::from));
+    }
+
     public List<ProductNameDto> getAllProduct() {
         return productRepository.findAll().stream().map(ProductNameDto::from).collect(Collectors.toList());
     }

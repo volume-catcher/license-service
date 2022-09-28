@@ -33,6 +33,14 @@ public class ProductController {
         return productService.getAllProduct(pageable);
     }
 
+    @GetMapping("/{searchWord}")
+    public PageDto<ProductNameDto> getAllProduct(
+            @PathVariable String searchWord,
+            @PageableDefault(size = 5, sort = "createAt", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return productService.getAllProduct(searchWord, pageable);
+    }
+
     @GetMapping("/names")
     public List<ProductNameDto> getAllProduct() {
         return productService.getAllProduct();
