@@ -97,7 +97,7 @@ public class LicenseRepositoryImpl implements LicenseRepositoryCustom {
             }
         }
 
-        OrderSpecifier<?> orderSpecifier = comparableExpression.desc();;
+        OrderSpecifier<?> orderSpecifier = comparableExpression.desc();
 
         if (sortDirection.isAscending()) {
             orderSpecifier = comparableExpression.asc();
