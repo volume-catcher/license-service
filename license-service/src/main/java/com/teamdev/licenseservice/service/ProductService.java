@@ -57,7 +57,11 @@ public class ProductService {
     }
 
     public List<ProductNameDto> getAllProduct() {
-        return productRepository.findAll().stream().map(ProductNameDto::from).collect(Collectors.toList());
+        return productRepository
+                .findAll()
+                .stream()
+                .map(ProductNameDto::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
