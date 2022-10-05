@@ -23,14 +23,14 @@ const LicenseModal = ({
 
   useEffect(() => {
     if (openModal) {
-      getProductsByLicense();
+      getContracts();
     } else {
       setRows([]);
     }
   }, [openModal]);
 
-  const getProductsByLicense = () => {
-    instance.get(`/license-product/license/${license}`).then(({ data }) => {
+  const getContracts = () => {
+    instance.get(`/licenses/${license}/contracts`).then(({ data }) => {
       setRows(data);
     });
   };
@@ -41,7 +41,7 @@ const LicenseModal = ({
 
   const refreshDataByHeader = () => {
     refreshData();
-    getProductsByLicense();
+    getContracts();
   };
 
   const style = {
@@ -80,7 +80,7 @@ const LicenseModal = ({
         <ProductHeader
           licenseKey={license}
           refreshData={refreshDataByHeader}
-          productsByLicense={rows.flatMap((item) => item.productName)}
+          contracts={rows.flatMap((item) => item.productName)}
           setCheckMsg={setCheckMsg}
           openSnackbar={handleOpenSnackbar}
         />

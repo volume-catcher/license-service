@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -7,14 +7,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useTheme } from "@mui/material/styles";
-import { isNotEmptyArray, isNotEmptyString } from "utils/utils";
+import { isNotEmptyString, isNotNull } from "utils/utils";
 import { instance } from "utils/apiInstance";
-import FallbackMsg from "views/FallbackMsg";
 import SearchTable from "views/SearchTable";
 
 const Product = () => {
   const theme = useTheme();
   const [rows, setRows] = useState([]);
+  const [totalElements, setTotalElements] = useState([]);
   const [checkMsg, setCheckMsg] = useState("");
   const [product, setProduct] = useState("");
 
@@ -23,19 +23,32 @@ const Product = () => {
     { id: "name", label: "제품명", width: "70%" },
   ];
 
-  useEffect(() => {
-    getRows();
-  }, []);
+  const getRows = (searchWord, page) => {
+    const uri = getUri(searchWord, page);
 
-  const getRows = useCallback(() => {
-    instance.get("/product").then(({ data }) => {
+    instance.get(uri).then(({ data }) => {
       if (!!data) {
-        setRows(
-          data.map((item, index) => ({ id: index + 1, name: item.name }))
-        );
+        setRows(data.content);
+        setTotalElements(data.totalElements);
       }
     });
-  });
+  };
+
+  const getUri = (searchWord, page) => {
+    let uri = "/products";
+
+    if (isNotEmptyString(searchWord)) {
+      uri += `/${searchWord}`;
+    }
+
+    if (!isNotNull(page)) {
+      page = 0;
+    }
+
+    uri += `?page=${page}`;
+
+    return uri;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -53,7 +66,7 @@ const Product = () => {
     };
 
     instance
-      .post("/product", data)
+      .post("/products", data)
       .then(() => {
         setCheckMsg("생성되었습니다");
         getRows();
@@ -123,15 +136,13 @@ const Product = () => {
               전체 제품 목록
             </Typography>
             <Box sx={{ mt: 3 }}>
-              {isNotEmptyArray(rows) ? (
-                <SearchTable
-                  rows={rows}
-                  columns={columns}
-                  placeholder={"제품 검색"}
-                />
-              ) : (
-                <FallbackMsg text="제품을 불러올 수 없습니다" retry={getRows} />
-              )}
+              <SearchTable
+                getData={getRows}
+                count={totalElements}
+                rows={rows}
+                columns={columns}
+                placeholder={"제품 검색"}
+              />
             </Box>
           </Container>
         </Grid>

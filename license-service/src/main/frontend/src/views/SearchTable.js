@@ -5,7 +5,6 @@ import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableFooter from "@mui/material/TableFooter";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
@@ -18,7 +17,6 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { isNotEmptyString } from "utils/utils";
 import { visuallyHidden } from "@mui/utils";
 
 function EnhancedTableHead(props) {
@@ -38,7 +36,7 @@ function EnhancedTableHead(props) {
           >
             <TableSortLabel
               active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
+              direction={orderBy === headCell.id ? order : "desc"}
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
@@ -151,65 +149,34 @@ const StyledInputBase = styled(TextField)(({ theme }) => ({
 }));
 
 const SearchTable = (props) => {
-  const { rows, columns, placeholder, rowOnClick, sortable = false } = props;
-  const [filteredRows, setFilteredRows] = useState([]);
-  const [count, setCount] = useState(rows.length);
+  const {
+    getData,
+    count,
+    rows,
+    columns,
+    placeholder,
+    rowOnClick,
+    sortable = false,
+  } = props;
+  const rowsPerPage = 5;
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchWord, setSearchWord] = useState("");
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("id");
+  const [order, setOrder] = useState("desc");
+  const [orderBy, setOrderBy] = useState("id");
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  useEffect(() => {
-    let rowClone = [...rows];
-    setPage(0);
-    setFilteredRows(
-      rowClone.filter(
-        (row) =>
-          !isNotEmptyString(searchWord) ||
-          row.name
-            .toString()
-            .toLowerCase()
-            .includes(searchWord.toString().toLowerCase())
-      )
-    );
-  }, [rows, searchWord]);
+  const emptyRows = Math.max(0, rowsPerPage - rows.length);
 
   useEffect(() => {
-    if (filteredRows?.length) {
-      setCount(filteredRows.length);
-    } else {
-      setCount(0);
-    }
-  }, [filteredRows]);
+    getData(page);
+  }, []);
+
+  useEffect(() => {
+    getData(searchWord, page, order, orderBy);
+  }, [searchWord, page, order, orderBy]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  }
-
-  function getComparator(order, orderBy) {
-    return order === "desc"
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -250,26 +217,20 @@ const SearchTable = (props) => {
             </TableHead>
           )}
           <TableBody>
-            {filteredRows
-              .sort(getComparator(order, orderBy))
-              .slice(
-                ...(rowsPerPage > 0
-                  ? [page * rowsPerPage, page * rowsPerPage + rowsPerPage]
-                  : [])
-              )
-              .map((item, index) => (
-                <Fragment key={index}>
-                  <TableRow
-                    key={item.id}
-                    hover
-                    onClick={rowOnClick ? () => rowOnClick(item.name) : null}
-                  >
-                    {Object.entries(item).map((entry) => (
-                      <TableCell key={entry[0]}>{entry[1]}</TableCell>
-                    ))}
-                  </TableRow>
-                </Fragment>
-              ))}
+            {rows.map((item, index) => (
+              <Fragment key={index}>
+                <TableRow
+                  key={index}
+                  hover
+                  onClick={rowOnClick ? () => rowOnClick(item.key) : null}
+                >
+                  <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                  {Object.entries(item).map((entry) => (
+                    <TableCell key={entry[0]}>{entry[1]}</TableCell>
+                  ))}
+                </TableRow>
+              </Fragment>
+            ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
                 <TableCell colSpan={6} />
@@ -279,20 +240,13 @@ const SearchTable = (props) => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+        rowsPerPageOptions={[]}
         component="div"
         colSpan={3}
         count={count}
         rowsPerPage={rowsPerPage}
         page={page}
-        SelectProps={{
-          inputProps: {
-            "aria-label": "rows per page",
-          },
-          native: true,
-        }}
         onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
       />
     </Paper>

@@ -15,7 +15,7 @@ import { isNotEmptyArray } from "utils/utils";
 const ProductHeader = ({
   licenseKey,
   refreshData,
-  productsByLicense,
+  contracts,
   setCheckMsg,
   openSnackbar,
 }) => {
@@ -58,7 +58,7 @@ const ProductHeader = ({
 
   const getAllProducts = () => {
     instance
-      .get("/product")
+      .get("/products/names")
       .then(({ data }) => {
         if (isNotEmptyArray(data)) {
           setProducts(data.flatMap((item) => item.name));
@@ -70,15 +70,15 @@ const ProductHeader = ({
   };
 
   const filterOptions = () => {
-    setOptions(products.filter((item) => !productsByLicense.includes(item)));
+    setOptions(products.filter((item) => !contracts.includes(item)));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    grantLicenseToProduct();
+    createContract();
   };
 
-  const grantLicenseToProduct = () => {
+  const createContract = () => {
     const data = {
       licenseKey: licenseKey,
       productName: productName,
@@ -87,7 +87,7 @@ const ProductHeader = ({
       expireAt: dayjs(expireAt).format("YYYY-MM-DDTHH:mm:ss"),
     };
     instance
-      .post("/license-product", data)
+      .post("/contracts", data)
       .then(() => {
         setCheckMsg("생성되었습니다");
         setOpenPanel(false);
