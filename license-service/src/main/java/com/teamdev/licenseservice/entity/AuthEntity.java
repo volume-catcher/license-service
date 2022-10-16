@@ -32,23 +32,16 @@ public class AuthEntity extends BaseTimeEntity {
     private Boolean isActivated;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "license_key", updatable = false, nullable = false)
+    @JoinColumn(name = "contract_id", updatable = false, nullable = false)
     @JsonIgnore
-    @Comment("라이선스키")
-    private LicenseEntity license;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", updatable = false, nullable = false)
-    @JsonIgnore
-    @Comment("제품ID")
-    private ProductEntity product;
+    @Comment("계약ID")
+    private ContractEntity contract;
 
     @Builder
-    public AuthEntity(UUID device, Boolean isActivated, LicenseEntity license, ProductEntity product) {
+    public AuthEntity(UUID device, Boolean isActivated, ContractEntity contract) {
         this.device = device;
         this.isActivated = isActivated;
-        this.license = license;
-        this.product = product;
+        this.contract = contract;
     }
 
     @PrePersist
