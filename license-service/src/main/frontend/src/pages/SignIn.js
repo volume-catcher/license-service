@@ -85,15 +85,6 @@ export default function SignIn() {
           >
             로그인
           </Button>
-          <StyledLink to="/signup">
-            <Typography
-              variant="subtitle1"
-              align="center"
-              sx={{ textDecoration: "underline" }}
-            >
-              회원가입
-            </Typography>
-          </StyledLink>
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
