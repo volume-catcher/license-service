@@ -19,8 +19,6 @@ spring:
 
 # JWT
 jwt:
-  header: Authorization
-  bearer: Bearer
   secret: dGVhbWRldi1saWNlbnNlc2VydmljZS1qd3QtbXktc2VjcmV0LWtleS10ZWFtZGV2LWxpY2Vuc2VzZXJ2aWNlLWp3dC1teS1zZWNyZXQta2V5LXRlYW1kZXYtbGljZW5zZXNlcnZpY2Utand0LW15LXNlY3JldC1rZXk=
   token-validity-in-seconds: 86400
 

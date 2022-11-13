@@ -9,7 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -22,9 +21,9 @@ public class AuthEntity extends BaseTimeEntity {
     @Comment("인증ID")
     private Integer id;
 
-    @Column(name = "device", columnDefinition ="BINARY(16)", updatable = false, nullable = false)
+    @Column(name = "device", columnDefinition ="CHAR(36)", updatable = false, nullable = false)
     @Comment("기기일련번호")
-    private UUID device;
+    private String device;
 
     @Column(name = "is_activated", nullable = false)
     @ColumnDefault("TRUE")
@@ -32,23 +31,16 @@ public class AuthEntity extends BaseTimeEntity {
     private Boolean isActivated;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "license_key", updatable = false, nullable = false)
+    @JoinColumn(name = "contract_id", updatable = false, nullable = false)
     @JsonIgnore
-    @Comment("라이선스키")
-    private LicenseEntity license;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", updatable = false, nullable = false)
-    @JsonIgnore
-    @Comment("제품ID")
-    private ProductEntity product;
+    @Comment("계약ID")
+    private ContractEntity contract;
 
     @Builder
-    public AuthEntity(UUID device, Boolean isActivated, LicenseEntity license, ProductEntity product) {
+    public AuthEntity(String device, Boolean isActivated, ContractEntity contract) {
         this.device = device;
         this.isActivated = isActivated;
-        this.license = license;
-        this.product = product;
+        this.contract = contract;
     }
 
     @PrePersist
