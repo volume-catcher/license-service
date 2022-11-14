@@ -2,6 +2,8 @@
 
 ## 📌 결과물
 
+[🚀 노션 바로가기](https://proximal-petroleum-1e7.notion.site/4e0a4e82f9e6449eab7771ed1ae6152d)
+
 <img alt="result" src="https://user-images.githubusercontent.com/54898819/201735192-1c9cc060-f579-42a9-a46c-071b1a6fadbc.gif" width="500"/>
 
 ## 📌 프로젝트 설명
